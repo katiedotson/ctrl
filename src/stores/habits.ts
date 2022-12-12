@@ -20,7 +20,6 @@ export const useHabitsStore = defineStore("habits", {
         if (it.id == habitId) it.isChecked = !it.isChecked;
         return it;
       });
-      console.log(this.habits);
     },
   },
 });

@@ -1,7 +1,12 @@
 <template>
-  <div class="habit" @click="onClick">
-    <div v-if="isChecked" class="check">&#9889;</div>
-    <div class="habit-name">{{ name }}</div>
+  <div class="habit">
+    <div class="check-wrapper" @click="onClick">
+      <div v-if="isChecked" class="check">&#9889;</div>
+    </div>
+    <div class="habit-name">
+      <div>{{ name }}</div>
+      <span>&rarr;</span>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -25,11 +30,15 @@ export default {
   background: var(--color-background-soft);
   padding: 0.5rem;
   height: 200px;
+  cursor: pointer;
+}
+.check-wrapper {
+  height: 100%;
+  width: 100%;
 }
 .check {
   font-size: 5rem;
   text-align: center;
-  cursor: pointer;
 }
 .habit-name {
   width: 100%;
@@ -39,5 +48,34 @@ export default {
   bottom: 2px;
   left: 0px;
   padding: 4px;
+}
+.habit-name div {
+  display: inline-block;
+}
+.habit-name span {
+  display: none;
+}
+.habit-name:hover {
+  -webkit-animation: glow 1s ease-in-out;
+  -moz-animation: glow 1s ease-in-out;
+  animation: glow 1s ease-in-out;
+  line-height: 2.5rem;
+}
+.habit-name:hover span {
+  line-height: 2.5rem 1s ease-in-out;
+  font-size: 1.5rem;
+  float: right;
+  display: inline-block;
+  -webkit-animation: glow 1s ease-in-out;
+  -moz-animation: glow 1s ease-in-out;
+  animation: glow 1s ease-in-out;
+}
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #00ff7f;
+  }
+  to {
+    text-shadow: 0 0 20px #00ff7f;
+  }
 }
 </style>
