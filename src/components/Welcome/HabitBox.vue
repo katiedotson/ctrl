@@ -1,22 +1,22 @@
 <template>
-  <div class="habit">
+  <div class="habit" @click="onClick">
     <div v-if="isChecked" class="check">&#9889;</div>
     <div class="habit-name">{{ name }}</div>
   </div>
 </template>
 <script lang="ts">
+import { useHabitsStore } from "@/stores/habits";
 export default {
   props: {
     name: String,
     isChecked: Boolean,
+    id: String,
   },
   methods: {
-    parentMethod: function () {
-      this.$emit("", this.name);
+    onClick: function () {
+      const habits = useHabitsStore();
+      habits.toggleIsChecked(this.id);
     },
-  },
-  data() {
-    return {};
   },
 };
 </script>
@@ -29,6 +29,7 @@ export default {
 .check {
   font-size: 5rem;
   text-align: center;
+  cursor: pointer;
 }
 .habit-name {
   width: 100%;

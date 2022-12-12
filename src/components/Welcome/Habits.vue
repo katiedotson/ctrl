@@ -9,6 +9,7 @@ import HabitBox from "./HabitBox.vue";
         v-for="habit in habits"
         :name="habit.name"
         :isChecked="habit.isChecked"
+        :id="habit.id"
       />
     </div>
     <div v-if="habits == undefined || habits.length == 0">
@@ -17,12 +18,17 @@ import HabitBox from "./HabitBox.vue";
   </div>
 </template>
 <script lang="ts">
+import { useHabitsStore } from "@/stores/habits";
 export default {
-  props: {
-    habits: Array,
-  },
+  props: {},
   data() {
-    return {};
+    return {
+      habits: [],
+    };
+  },
+  mounted() {
+    const habitsStore = useHabitsStore();
+    this.habits = habitsStore.habits;
   },
 };
 </script>

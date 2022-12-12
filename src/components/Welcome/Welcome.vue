@@ -4,7 +4,7 @@ import Time from "./Time.vue";
 </script>
 
 <template>
-  <Habits :habits="habits" />
+  <Habits />
   <Time :currentTime="currentTime" />
 </template>
 
@@ -22,12 +22,6 @@ export default {
   },
   data() {
     return {
-      habits: [
-        { name: "thing", isChecked: false },
-        { name: "other", isChecked: true },
-        { name: "other", isChecked: true },
-        { name: "other", isChecked: false },
-      ],
       currentTime: Date.now(),
     };
   },
