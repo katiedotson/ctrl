@@ -1,24 +1,35 @@
 <template>
   <section>
     <h1>Habits</h1>
-    <div class="habits-container">
-      <div v-for="habit in habits" class="habit-detail">
-        <div class="habit-name">{{ habit.name }}</div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-        <div class="habit-check" v-html="habit.checkIcon"></div>
-      </div>
+    <div id="table-scroll" class="table-scroll">
+      <table id="main-table" class="main-table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th
+              scope="col"
+              v-for="date in dates"
+              v-html="getFormattedDate(date)"
+            ></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="habit in habits">
+            <th>{{ habit.name }}</th>
+            <td
+              v-for="date in dates"
+              v-html="getFormattedIcon(habit, date)"
+            ></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 </template>
 <script lang="ts">
 import { Habit, useHabitsStore } from "@/stores/habits";
+import { useCalendarStore } from "@/stores/calendar";
+import moment from "moment";
 export default {
   mounted() {
     const habitsStore = useHabitsStore();
@@ -26,34 +37,74 @@ export default {
     habitsStore.$subscribe((_, state) => {
       this.habits = state.habits;
     });
+    const calendarStore = useCalendarStore();
+    this.dates = calendarStore.calendar;
   },
   data() {
     return {
       habits: [] as Habit[],
+      dates: [] as any[],
     };
+  },
+  methods: {
+    getFormattedDate(date: any): string {
+      return moment(date.date).format("ddd MMM D");
+    },
+    getFormattedIcon(habit: Habit, date: any): string {
+      if (date.habitsCompleted.some((it: any) => it == habit.id)) {
+        return habit.checkIcon;
+      }
+      return "";
+    },
   },
 };
 </script>
 <style scoped>
-.habits-container {
-  scroll-behavior: smooth;
-  overflow-y: hidden;
-  overflow-x: scroll;
+.table-scroll {
+  position: relative;
+  margin: 12px auto;
+  overflow: auto;
+  background: var(--color-background-soft);
 }
-.habit-detail {
-  display: flex;
+.table-scroll table {
+  width: 100%;
+  min-width: 600px;
+  margin: auto;
+  border-spacing: 0;
 }
-.habit-detail > div {
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding: 20px;
-  font-size: 1rem;
-  background-color: var(--color-background-soft);
+.table-wrap {
+  position: relative;
 }
-.habit-detail > div.habit-check {
+.table-scroll th,
+.table-scroll td {
+  padding: 5px;
+  border: none;
+  background: var(--color-background-soft);
+  vertical-align: top;
   text-align: center;
 }
-.habit-detail > div.habit-name {
-  width: 180px;
+.table-scroll thead th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+/* safari and ios need the tfoot itself to be position:sticky also */
+.table-scroll tfoot,
+.table-scroll tfoot th,
+.table-scroll tfoot td {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  color: #fff;
+  z-index: 4;
+}
+th:first-child {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  text-align: left;
+  position: sticky;
+  padding: 26px 12px;
 }
 </style>
