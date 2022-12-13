@@ -32,9 +32,12 @@ export const useHabitsStore = defineStore("habits", {
         (it) => it.id == this.$state.showHabitModal
       );
     },
-    saveHabitUpdates(id: string, checkIcon: string) {
+    saveHabitUpdates(id: string, name: string, checkIcon: string) {
       this.$state.habits = this.habits.map((it) => {
-        if (it.id == id) it.checkIcon = checkIcon;
+        if (it.id == id) {
+          it.checkIcon = checkIcon;
+          it.name = name;
+        }
         return it;
       });
     },

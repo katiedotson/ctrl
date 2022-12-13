@@ -2,6 +2,8 @@
   <section>
     <h1>Habit Name: {{ habitProp.name }}</h1>
     <hr />
+    <label for="checkIcon">Name</label>
+    <input type="text" id="name" name="name" v-model="name" />
     <label for="checkIcon">Icon HTML</label>
     <input type="text" id="checkIcon" name="checkIcon" v-model="checkIcon" />
     <button @click="saveUpdates">Save</button>
@@ -16,11 +18,12 @@ export default {
   mounted() {
     this.checkIcon = this.$props.habitProp.checkIcon;
     this.id = this.$props.habitProp.id;
+    this.name = this.$props.habitProp.name;
   },
   methods: {
     saveUpdates() {
       const habitsStore = useHabitsStore();
-      habitsStore.saveHabitUpdates(this.id, this.checkIcon);
+      habitsStore.saveHabitUpdates(this.id, this.name, this.checkIcon);
       habitsStore.showHabitModal("");
     },
   },
@@ -28,6 +31,7 @@ export default {
     return {
       checkIcon: "",
       id: "",
+      name: "",
     };
   },
 };
@@ -40,6 +44,10 @@ input {
 hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+label {
+  margin-top: 1rem;
+  display: block;
 }
 button {
   display: block;
