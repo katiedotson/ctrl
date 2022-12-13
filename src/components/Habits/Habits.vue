@@ -2,22 +2,16 @@
   <section>
     <h1>Habits</h1>
     <div id="table-scroll" class="table-scroll">
-      <table id="main-table" class="main-table">
+      <table id="main-table">
         <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th
-              scope="col"
-              v-for="date in dates"
-              v-html="getFormattedDate(date)"
-            ></th>
-          </tr>
+          <th scope="col"></th>
+          <th scope="col" v-for="habit in habits">{{ habit.name }}</th>
         </thead>
         <tbody>
-          <tr v-for="habit in habits">
-            <th>{{ habit.name }}</th>
+          <tr v-for="date in dates">
+            <th v-html="getFormattedDate(date)"></th>
             <td
-              v-for="date in dates"
+              v-for="habit in habits"
               v-html="getFormattedIcon(habit, date)"
             ></td>
           </tr>
@@ -61,10 +55,12 @@ export default {
 </script>
 <style scoped>
 .table-scroll {
+  max-height: 80vh;
   position: relative;
   margin: 12px auto;
   overflow: auto;
   background: var(--color-background-soft);
+  box-shadow: 5px 10px 8px 10px #00000021;
 }
 .table-scroll table {
   width: 100%;
@@ -81,11 +77,13 @@ export default {
   border: none;
   background: var(--color-background-soft);
   text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.093);
 }
 .table-scroll thead th {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
+  z-index: 3;
 }
 th:first-child {
   position: -webkit-sticky;
@@ -93,7 +91,6 @@ th:first-child {
   left: 0;
   z-index: 2;
   text-align: left;
-  position: sticky;
   padding: 26px 12px;
 }
 </style>
