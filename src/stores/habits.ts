@@ -7,12 +7,12 @@ export const useHabitsStore = defineStore("habits", {
         name: "Food",
         isChecked: false,
         id: "0",
-        checkIcon: "&#9889;",
+        checkIcon: "&#129379;",
       },
-      { name: "OTF", isChecked: true, id: "1", checkIcon: "&#9889;" },
+      { name: "OTF", isChecked: true, id: "1", checkIcon: "&#128170;" },
       { name: "Meditate", isChecked: true, id: "2", checkIcon: "&#9889;" },
-      { name: "Read", isChecked: false, id: "3", checkIcon: "&#9889;" },
-      { name: "Learn", isChecked: false, id: "4", checkIcon: "&#9889;" },
+      { name: "Read", isChecked: false, id: "3", checkIcon: "&#128218;" },
+      { name: "Learn", isChecked: false, id: "4", checkIcon: "&#127891;" },
       { name: "Water", isChecked: false, id: "5", checkIcon: "&#9889;" },
       { name: "Stretch", isChecked: false, id: "6", checkIcon: "&#9889;" },
     ] as Habit[],
@@ -31,6 +31,12 @@ export const useHabitsStore = defineStore("habits", {
       this.$state.currentHabit = this.$state.habits.find(
         (it) => it.id == this.$state.showHabitModal
       );
+    },
+    saveHabitUpdates(id: string, checkIcon: string) {
+      this.$state.habits = this.habits.map((it) => {
+        if (it.id == id) it.checkIcon = checkIcon;
+        return it;
+      });
     },
   },
 });

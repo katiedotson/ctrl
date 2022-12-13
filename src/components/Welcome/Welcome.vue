@@ -11,7 +11,7 @@ import EditHabit from "./EditHabit.vue";
   <Modal @close-modal="closeHabitModal" v-if="showHabitModal">
     <template v-slot:title> Edit Habit </template>
     <template v-slot:content>
-      <EditHabit :habitProp.habit="currentHabit" />
+      <EditHabit :habitProp="currentHabit" />
     </template>
   </Modal>
 </template>
