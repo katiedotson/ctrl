@@ -1,26 +1,33 @@
 <template>
   <div class="habit">
     <div class="check-wrapper" @click="onClick">
-      <div v-if="isChecked" class="check">&#9889;</div>
+      <div v-if="habit.isChecked" class="check" v-html="habit.checkIcon"></div>
     </div>
-    <div class="habit-name">
-      <div>{{ name }}</div>
+    <div class="habit-name" @click="onOpen">
+      <div>{{ habit.name }}</div>
       <span>&rarr;</span>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { useHabitsStore } from "@/stores/habits";
+import { Habit, useHabitsStore } from "@/stores/habits.ts";
 export default {
   props: {
-    name: String,
-    isChecked: Boolean,
-    id: String,
+    habit: {
+      name: "",
+      isChecked: false,
+      id: "",
+      checkIcon: "",
+    } as Habit,
   },
   methods: {
     onClick: function () {
-      const habits = useHabitsStore();
-      habits.toggleIsChecked(this.id);
+      const habitsStore = useHabitsStore();
+      habitsStore.toggleIsChecked(this.habit.id);
+    },
+    onOpen: function () {
+      const habitsStore = useHabitsStore();
+      habitsStore.showHabitModal(this.habit.id);
     },
   },
 };

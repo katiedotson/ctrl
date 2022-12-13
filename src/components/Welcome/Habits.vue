@@ -5,12 +5,7 @@ import HabitBox from "./HabitBox.vue";
   <div id="habits-box">
     <h2>Habits</h2>
     <div v-if="habits != undefined && habits.length != 0" id="habits-container">
-      <HabitBox
-        v-for="habit in habits"
-        :name="habit.name"
-        :isChecked="habit.isChecked"
-        :id="habit.id"
-      />
+      <HabitBox v-for="habit in habits" :habit="habit" />
     </div>
     <div v-if="habits == undefined || habits.length == 0">
       Nothing here yet.
@@ -18,12 +13,12 @@ import HabitBox from "./HabitBox.vue";
   </div>
 </template>
 <script lang="ts">
-import { useHabitsStore } from "@/stores/habits";
+import { useHabitsStore, Habit } from "@/stores/habits";
 export default {
   props: {},
   data() {
     return {
-      habits: [],
+      habits: [] as Habit[],
     };
   },
   mounted() {
