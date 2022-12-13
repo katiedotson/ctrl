@@ -80,23 +80,12 @@ export default {
   padding: 5px;
   border: none;
   background: var(--color-background-soft);
-  vertical-align: top;
   text-align: center;
 }
 .table-scroll thead th {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-}
-/* safari and ios need the tfoot itself to be position:sticky also */
-.table-scroll tfoot,
-.table-scroll tfoot th,
-.table-scroll tfoot td {
-  position: -webkit-sticky;
-  position: sticky;
-  bottom: 0;
-  color: #fff;
-  z-index: 4;
 }
 th:first-child {
   position: -webkit-sticky;
