@@ -15,7 +15,6 @@ import HabitBox from "./HabitBox.vue";
 <script lang="ts">
 import { useHabitsStore, Habit } from "@/stores/habits";
 export default {
-  props: {},
   data() {
     return {
       habits: [] as Habit[],

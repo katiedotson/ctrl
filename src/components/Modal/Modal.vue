@@ -16,7 +16,7 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 export default {
   methods: {
     closeModal() {
@@ -36,6 +36,7 @@ export default {
   overflow: auto;
 }
 .modal-content {
+  max-width: 680px;
   background-color: var(--color-background-soft);
   margin: 15% auto;
   padding: 20px;

@@ -10,15 +10,13 @@
   </div>
 </template>
 <script lang="ts">
-import { Habit, useHabitsStore } from "@/stores/habits.ts";
+import { Habit, useHabitsStore } from "@/stores/habits";
 export default {
   props: {
     habit: {
-      name: "",
-      isChecked: false,
-      id: "",
-      checkIcon: "",
-    } as Habit,
+      type: Habit,
+      required: true
+    },
   },
   methods: {
     onClick: function () {

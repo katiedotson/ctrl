@@ -50,12 +50,12 @@ export const useHabitsStore = defineStore("habits", {
 });
 
 export class Habit {
-  name: String;
+  name: string;
   isChecked: Boolean;
   id: string;
   checkIcon: string;
 
-  constructor(name: String, isChecked: Boolean, id: string, checkIcon: string) {
+  constructor(name: string, isChecked: Boolean, id: string, checkIcon: string) {
     this.name = name;
     this.isChecked = isChecked;
     this.id = id;

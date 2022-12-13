@@ -1,9 +1,9 @@
 <template>
   <section>
-    <h1>Habit Name: {{ habitProp.name }}</h1>
+    <h1>Habit Name: {{ habitName }}</h1>
     <hr />
     <label for="checkIcon">Name</label>
-    <input type="text" id="name" name="name" v-model="name" />
+    <input type="text" id="name" name="name" v-model="habitName" />
     <label for="checkIcon">Icon HTML</label>
     <input type="text" id="checkIcon" name="checkIcon" v-model="checkIcon" />
     <div class="buttons">
@@ -12,21 +12,24 @@
     </div>
   </section>
 </template>
-<script>
+<script lang="ts">
 import { useHabitsStore, Habit } from "@/stores/habits";
 export default {
   props: {
-    habitProp: Habit,
+    habitProp: {
+      type: Habit,
+      required: true
+    },
   },
   mounted() {
     this.checkIcon = this.$props.habitProp.checkIcon;
     this.id = this.$props.habitProp.id;
-    this.name = this.$props.habitProp.name;
+    this.habitName = this.$props.habitProp.name;
   },
   methods: {
     saveUpdates() {
       const habitsStore = useHabitsStore();
-      habitsStore.saveHabitUpdates(this.id, this.name, this.checkIcon);
+      habitsStore.saveHabitUpdates(this.id, this.habitName, this.checkIcon);
       habitsStore.showHabitModal("");
     },
     deleteHabit() {
@@ -39,7 +42,7 @@ export default {
     return {
       checkIcon: "",
       id: "",
-      name: "",
+      habitName: "",
     };
   },
 };
