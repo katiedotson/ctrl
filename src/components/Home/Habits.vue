@@ -3,9 +3,9 @@ import HabitBox from "./HabitBox.vue";
 </script>
 <template>
   <div id="habits-box">
-    <h2>Habits</h2>
+    <h2 @click="habitsClicked">Habits<span>&rarr;</span></h2>
     <div v-if="habits != undefined && habits.length != 0" id="habits-container">
-      <HabitBox v-for="habit in habits" :habit="habit" />
+      <HabitBox v-for="habit in habits" :habitProp="(habit as Habit)" />
     </div>
     <div v-if="habits == undefined || habits.length == 0">
       Nothing here yet.
@@ -27,11 +27,29 @@ export default {
       this.habits = state.habits;
     });
   },
+  methods: {
+    habitsClicked() {
+      this.$emit("habitsClicked");
+    },
+  },
 };
 </script>
 <style scoped>
 h2 {
   font-size: 1rem;
+  cursor: pointer;
+}
+h2:hover {
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+h2 span {
+  display: none;
+}
+h2:hover span {
+  display: inline-block;
+  margin-left: 8px;
 }
 #habits-box {
   background: hsla(180, 100%, 37%, 0.2);

@@ -6,7 +6,7 @@ import EditHabit from "./EditHabit.vue";
 </script>
 
 <template>
-  <Habits />
+  <Habits @habits-clicked="habitsTitleClicked" />
   <Time :currentTime="currentTime" />
   <Modal @close-modal="closeHabitModal" v-if="showHabitModal">
     <template v-slot:title> Edit Habit </template>
@@ -43,6 +43,9 @@ export default {
     closeHabitModal() {
       const habitsStore = useHabitsStore();
       habitsStore.showHabitModal("");
+    },
+    habitsTitleClicked() {
+      this.$router.push("/habits");
     },
   },
   data() {
