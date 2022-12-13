@@ -6,7 +6,10 @@
     <input type="text" id="name" name="name" v-model="name" />
     <label for="checkIcon">Icon HTML</label>
     <input type="text" id="checkIcon" name="checkIcon" v-model="checkIcon" />
-    <button @click="saveUpdates">Save</button>
+    <div class="buttons">
+      <button class="delete" @click="deleteHabit">Delete</button>
+      <button @click="saveUpdates">Save</button>
+    </div>
   </section>
 </template>
 <script>
@@ -24,6 +27,11 @@ export default {
     saveUpdates() {
       const habitsStore = useHabitsStore();
       habitsStore.saveHabitUpdates(this.id, this.name, this.checkIcon);
+      habitsStore.showHabitModal("");
+    },
+    deleteHabit() {
+      const habitsStore = useHabitsStore();
+      habitsStore.deleteHabit(this.id);
       habitsStore.showHabitModal("");
     },
   },
@@ -49,8 +57,17 @@ label {
   margin-top: 1rem;
   display: block;
 }
-button {
+.buttons {
   display: block;
+  margin-left: auto;
+  width: max-content;
+}
+.buttons button.delete {
+  background-color: #c70039;
+  color: white;
+}
+.buttons button {
+  display: inline-block;
   background-color: #33ffbd;
   border: none;
   color: black;
@@ -58,7 +75,9 @@ button {
   text-decoration: none;
   margin-top: 16px;
   margin-bottom: 16px;
-  margin-left: auto;
   cursor: pointer;
+}
+.buttons :last-child {
+  margin-left: 12px;
 }
 </style>

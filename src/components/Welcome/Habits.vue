@@ -24,6 +24,9 @@ export default {
   mounted() {
     const habitsStore = useHabitsStore();
     this.habits = habitsStore.habits;
+    habitsStore.$subscribe((mutation, state) => {
+      this.habits = state.habits;
+    });
   },
 };
 </script>

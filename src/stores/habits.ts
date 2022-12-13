@@ -41,6 +41,11 @@ export const useHabitsStore = defineStore("habits", {
         return it;
       });
     },
+    deleteHabit(id: string) {
+      this.$state.habits = this.$state.habits.filter((it) => {
+        return it.id !== id;
+      });
+    },
   },
 });
 
