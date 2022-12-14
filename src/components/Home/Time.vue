@@ -3,18 +3,27 @@
   <div id="time">{{ formattedTime }}</div>
 </template>
 <script lang="ts">
-import moment from "moment";
+import { DateTime } from "luxon";
 export default {
-  props: { currentTime: Number },
+  props: {
+    currentTime: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {};
   },
   computed: {
     formattedDate() {
-      return moment(this.$props.currentTime).format("MMMM Do, YYYY");
+      return DateTime.fromMillis(this.$props.currentTime).toLocaleString(
+        DateTime.DATE_FULL
+      );
     },
     formattedTime() {
-      return moment(this.$props.currentTime).format("h:mm:ssa");
+      return DateTime.fromMillis(this.$props.currentTime).toFormat(
+        "hh:mm:ss a"
+      );
     },
   },
 };

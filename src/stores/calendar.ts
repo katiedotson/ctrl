@@ -1,4 +1,4 @@
-import moment from "moment";
+import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import type { Habit } from "./habits";
 
@@ -63,7 +63,7 @@ export const useCalendarStore = defineStore("calendar", {
         habitsCompleted: ["0"],
       },
     ] as AppDay[],
-    startDate: moment(new Date()).day("Monday").toDate(),
+    startDate: DateTime.fromJSDate(new Date()).startOf("week").toJSDate(),
   }),
   actions: {
     markHabitCompleteForDay(habitId: string, date: Date) {
@@ -89,22 +89,20 @@ export const useCalendarStore = defineStore("calendar", {
       });
     },
     loadCalendar() {
+      const startDay = DateTime.fromJSDate(this.$state.startDate);
+      const endDay = DateTime.fromJSDate(this.$state.startDate).plus({
+        days: 7,
+      });
       const result = this.$state.allDates.filter((appDay) => {
-        return (
-          moment(appDay.date).isSameOrAfter(
-            moment(this.$state.startDate).startOf("D")
-          ) &&
-          moment(appDay.date).isSameOrBefore(
-            moment(this.$state.startDate).startOf("D").add("days", 6)
-          )
-        );
+        const thisDay = DateTime.fromJSDate(appDay.date);
+        return thisDay >= startDay && thisDay <= endDay;
       });
       this.$state.calendar = result;
     },
     changeStartDate(numOfWeeks: number) {
-      this.$state.startDate = moment(this.$state.startDate)
-        .add("weeks", numOfWeeks)
-        .toDate();
+      this.$state.startDate = DateTime.fromJSDate(this.$state.startDate)
+        .plus({ week: numOfWeeks })
+        .toJSDate();
       this.loadCalendar();
     },
   },

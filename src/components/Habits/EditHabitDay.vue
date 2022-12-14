@@ -18,7 +18,7 @@
 <script lang="ts">
 import type { Habit } from "@/stores/habits";
 import { AppDay, useCalendarStore } from "@/stores/calendar";
-import moment from "moment";
+import { DateTime } from "luxon";
 export default {
   props: {
     habits: {
@@ -43,7 +43,7 @@ export default {
       calendarStore.toggleHabitForDate(this.$props?.day, habit);
     },
     formattedDate(): string {
-      return moment(this.$props.day.date).format("ddd MMM D");
+      return DateTime.fromJSDate(this.$props.day.date).toFormat("ddd MMM D");
     },
   },
 };

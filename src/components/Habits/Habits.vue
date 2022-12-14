@@ -42,7 +42,7 @@ import EditHabitDay from "./EditHabitDay.vue";
 <script lang="ts">
 import { Habit, useHabitsStore } from "@/stores/habits";
 import { AppDay, useCalendarStore } from "@/stores/calendar";
-import moment from "moment";
+import { DateTime } from "luxon";
 export default {
   mounted() {
     // habits
@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     getFormattedDate(day: AppDay): string {
-      return moment(day.date).format("ddd MMM D");
+      return DateTime.fromJSDate(day.date).toFormat("EEE MMM d");
     },
     getFormattedIcon(habit: Habit, date: any): string {
       if (date.habitsCompleted.some((it: any) => it == habit.id)) {
@@ -94,7 +94,7 @@ export default {
       this.dateModalDay = undefined;
     },
     getStartDateFormatted(): string {
-      return moment(this.startDate).format("dddd MMMM Do, YYYY");
+      return DateTime.fromJSDate(this.startDate!!).toFormat("DDDD");
     },
     changeWeek(increment: number) {
       const calendarStore = useCalendarStore();
