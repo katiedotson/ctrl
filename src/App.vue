@@ -11,6 +11,11 @@ export default {
   beforeCreate() {
     const calendarStore = useCalendarStore();
     calendarStore.initialize();
+    import { initializeApp } from "firebase/app";
+
+    const firebaseConfig = {};
+
+    const app = initializeApp(firebaseConfig);
   },
 };
 </script>
