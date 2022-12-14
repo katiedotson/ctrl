@@ -57,7 +57,6 @@ export default {
     // calendar
     const calendarStore = useCalendarStore();
     this.days = calendarStore.calendar;
-    calendarStore.loadCalendar();
     calendarStore.$subscribe(
       (_, state) => {
         this.days = state.calendar;

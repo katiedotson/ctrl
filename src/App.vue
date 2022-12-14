@@ -5,3 +5,12 @@ import { RouterLink, RouterView } from "vue-router";
 <template>
   <RouterView />
 </template>
+<script lang="ts">
+import { useCalendarStore } from "./stores/calendar";
+export default {
+  beforeCreate() {
+    const calendarStore = useCalendarStore();
+    calendarStore.initialize();
+  },
+};
+</script>

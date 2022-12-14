@@ -67,6 +67,27 @@ export const useCalendarStore = defineStore("calendar", {
     currentDay: {} as AppDay,
   }),
   actions: {
+    initialize() {
+      this.loadCurrentDay();
+      this.loadCalendar();
+    },
+    loadCurrentDay() {
+      const todayAppDay = this.$state.allDates.find((day) => {
+        return this.checkIfDaysAreSame(new Date(), day.date);
+      })!!;
+      this.$state.currentDay = todayAppDay;
+    },
+    loadCalendar() {
+      const startDay = DateTime.fromJSDate(this.$state.startDate);
+      const endDay = DateTime.fromJSDate(this.$state.startDate).plus({
+        days: 7,
+      });
+      const result = this.$state.allDates.filter((appDay) => {
+        const thisDay = DateTime.fromJSDate(appDay.date);
+        return thisDay >= startDay && thisDay <= endDay;
+      });
+      this.$state.calendar = result;
+    },
     checkIfDaysAreSame(dateOne: Date, dateTwo: Date): Boolean {
       return (
         DateTime.fromJSDate(dateOne).startOf("day").toMillis() ==
@@ -95,28 +116,11 @@ export const useCalendarStore = defineStore("calendar", {
         })!!;
       }
     },
-    loadCalendar() {
-      const startDay = DateTime.fromJSDate(this.$state.startDate);
-      const endDay = DateTime.fromJSDate(this.$state.startDate).plus({
-        days: 7,
-      });
-      const result = this.$state.allDates.filter((appDay) => {
-        const thisDay = DateTime.fromJSDate(appDay.date);
-        return thisDay >= startDay && thisDay <= endDay;
-      });
-      this.$state.calendar = result;
-    },
     changeStartDate(numOfWeeks: number) {
       this.$state.startDate = DateTime.fromJSDate(this.$state.startDate)
         .plus({ week: numOfWeeks })
         .toJSDate();
       this.loadCalendar();
-    },
-    loadCurrentDay() {
-      const todayAppDay = this.$state.allDates.find((day) => {
-        return this.checkIfDaysAreSame(new Date(), day.date);
-      })!!;
-      this.$state.currentDay = todayAppDay;
     },
     isHabitCompletedToday(habit: Habit): Boolean {
       const matchingDay = this.$state.allDates.find((appDay) => {

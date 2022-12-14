@@ -37,7 +37,6 @@ export default {
     // calendar and today
     const calendarStore = useCalendarStore();
     this.currentDay = calendarStore.currentDay;
-    calendarStore.loadCurrentDay();
     calendarStore.$subscribe((_, state) => {
       this.currentDay = state.currentDay;
     });
