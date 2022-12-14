@@ -1,9 +1,11 @@
+import moment from "moment";
 import { defineStore } from "pinia";
 import type { Habit } from "./habits";
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
-    calendar: [
+    calendar: [] as AppDay[],
+    allDates: [
       {
         date: new Date("2022-12-06"),
         habitsCompleted: ["0", "1", "3"],
@@ -32,7 +34,36 @@ export const useCalendarStore = defineStore("calendar", {
         date: new Date("2022-12-12"),
         habitsCompleted: ["0"],
       },
+      {
+        date: new Date("2022-12-13"),
+        habitsCompleted: ["0", "1", "3"],
+      },
+      {
+        date: new Date("2022-12-14"),
+        habitsCompleted: ["0", "3"],
+      },
+      {
+        date: new Date("2022-12-15"),
+        habitsCompleted: ["3"],
+      },
+      {
+        date: new Date("2022-12-16"),
+        habitsCompleted: ["1"],
+      },
+      {
+        date: new Date("2022-12-17"),
+        habitsCompleted: ["0", "1", "2", "3"],
+      },
+      {
+        date: new Date("2022-12-18"),
+        habitsCompleted: ["0", "1", "3"],
+      },
+      {
+        date: new Date("2022-12-19"),
+        habitsCompleted: ["0"],
+      },
     ] as AppDay[],
+    startDate: moment(new Date()).day("Monday").toDate(),
   }),
   actions: {
     markHabitCompleteForDay(habitId: string, date: Date) {
@@ -56,6 +87,14 @@ export const useCalendarStore = defineStore("calendar", {
         }
         return day;
       });
+    },
+    loadCalendar() {
+      const result = this.$state.allDates.filter((appDay) => {
+        return moment(appDay.date).isSameOrAfter(
+          moment(this.$state.startDate).startOf("D")
+        );
+      });
+      this.$state.calendar = result;
     },
   },
 });

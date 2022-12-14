@@ -47,9 +47,13 @@ export default {
     });
     const calendarStore = useCalendarStore();
     this.days = calendarStore.calendar;
-    calendarStore.$subscribe((_, state) => {
-      this.days = state.calendar;
-    });
+    calendarStore.loadCalendar();
+    calendarStore.$subscribe(
+      (_, state) => {
+        this.days = state.calendar;
+      },
+      { detached: true }
+    );
   },
   data() {
     return {
