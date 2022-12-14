@@ -31,14 +31,12 @@ export default {
 <style scoped>
 #date {
   font-family: "Marck Script", cursive;
-  background: hsla(201, 100%, 50%, 0.1);
   padding: 1rem;
   font-size: 3rem;
   color: var(--color-heading);
 }
 #time {
   font-family: "VT323", monospace;
-  background: hsla(160, 100%, 37%, 0.2);
   padding: 1rem;
   font-size: 3rem;
   color: var(--color-heading);

@@ -44,39 +44,38 @@ export const useCalendarStore = defineStore("calendar", {
       },
       {
         date: new Date("2022-12-15"),
-        habitsCompleted: ["3"],
+        habitsCompleted: [],
       },
       {
         date: new Date("2022-12-16"),
-        habitsCompleted: ["1"],
+        habitsCompleted: [],
       },
       {
         date: new Date("2022-12-17"),
-        habitsCompleted: ["0", "1", "2", "3"],
+        habitsCompleted: [],
       },
       {
         date: new Date("2022-12-18"),
-        habitsCompleted: ["0", "1", "3"],
+        habitsCompleted: [],
       },
       {
         date: new Date("2022-12-19"),
-        habitsCompleted: ["0"],
+        habitsCompleted: [],
       },
     ] as AppDay[],
     startDate: DateTime.fromJSDate(new Date()).startOf("week").toJSDate(),
+    currentDay: {} as AppDay,
   }),
   actions: {
-    markHabitCompleteForDay(habitId: string, date: Date) {
-      this.$state.calendar = this.$state.calendar.map((calendarDay) => {
-        if (date == calendarDay.date) {
-          calendarDay.habitsCompleted.push(habitId);
-        }
-        return calendarDay;
-      });
+    checkIfDaysAreSame(dateOne: Date, dateTwo: Date): Boolean {
+      return (
+        DateTime.fromJSDate(dateOne).startOf("day").toMillis() ==
+        DateTime.fromJSDate(dateTwo).startOf("day").toMillis()
+      );
     },
-    toggleHabitForDate(date: AppDay | undefined, habit: Habit) {
+    toggleHabitForDate(date: AppDay, habit: Habit) {
       this.$state.calendar = this.$state.calendar.map((day) => {
-        if (day.date == date?.date) {
+        if (this.checkIfDaysAreSame(date?.date!!, day.date)) {
           if (day.habitsCompleted.some((id) => id == habit.id)) {
             day.habitsCompleted = day.habitsCompleted.filter(
               (id) => id != habit.id
@@ -87,6 +86,14 @@ export const useCalendarStore = defineStore("calendar", {
         }
         return day;
       });
+      if (this.checkIfDaysAreSame(date.date, this.$state.currentDay.date!!)) {
+        this.$state.currentDay = this.$state.calendar.find((appDay) => {
+          return this.checkIfDaysAreSame(
+            appDay.date,
+            this.$state.currentDay.date!!
+          );
+        })!!;
+      }
     },
     loadCalendar() {
       const startDay = DateTime.fromJSDate(this.$state.startDate);
@@ -104,6 +111,23 @@ export const useCalendarStore = defineStore("calendar", {
         .plus({ week: numOfWeeks })
         .toJSDate();
       this.loadCalendar();
+    },
+    loadCurrentDay() {
+      const todayAppDay = this.$state.allDates.find((day) => {
+        return this.checkIfDaysAreSame(new Date(), day.date);
+      })!!;
+      this.$state.currentDay = todayAppDay;
+    },
+    isHabitCompletedToday(habit: Habit): Boolean {
+      const matchingDay = this.$state.allDates.find((appDay) => {
+        return this.checkIfDaysAreSame(
+          appDay.date,
+          this.$state.currentDay.date
+        );
+      })!!;
+      return matchingDay.habitsCompleted.some((habitId) => {
+        return habitId == habit.id;
+      });
     },
   },
 });

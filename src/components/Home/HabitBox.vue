@@ -1,11 +1,7 @@
 <template>
   <div class="habit">
     <div class="check-wrapper" @click="onClick">
-      <div
-        v-if="habitProp.isChecked"
-        class="check"
-        v-html="habitProp.checkIcon"
-      ></div>
+      <div class="check" v-html="getHtmlForHabit()"></div>
     </div>
     <div class="habit-name" @click="onOpen">
       <div>{{ habitProp.name }}</div>
@@ -15,21 +11,43 @@
 </template>
 <script lang="ts">
 import { Habit, useHabitsStore } from "@/stores/habits";
+import { AppDay, useCalendarStore } from "@/stores/calendar";
 export default {
   props: {
     habitProp: {
       type: Habit,
       required: true,
     },
+    currentDay: {
+      type: AppDay,
+      required: true,
+    },
   },
   methods: {
     onClick: function () {
-      const habitsStore = useHabitsStore();
-      habitsStore.toggleIsChecked(this.habitProp.id);
+      const calendarStore = useCalendarStore();
+      calendarStore.toggleHabitForDate(
+        this.$props.currentDay,
+        this.$props.habitProp
+      );
     },
     onOpen: function () {
       const habitsStore = useHabitsStore();
       habitsStore.showHabitModal(this.habitProp.id);
+    },
+    checkHabitCompleted(): Boolean {
+      const calendarStore = useCalendarStore();
+      return calendarStore.isHabitCompletedToday(this.habitProp);
+    },
+    getHtmlForHabit(): string {
+      const calendarStore = useCalendarStore();
+      const isCompleted = calendarStore.isHabitCompletedToday(this.habitProp);
+
+      if (isCompleted) {
+        return this.habitProp.checkIcon;
+      } else {
+        return "";
+      }
     },
   },
 };

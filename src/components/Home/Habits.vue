@@ -5,7 +5,11 @@ import HabitBox from "./HabitBox.vue";
   <div id="habits-box">
     <h2 @click="habitsClicked">Habits<span>&rarr;</span></h2>
     <div v-if="habits != undefined && habits.length != 0" id="habits-container">
-      <HabitBox v-for="habit in habits" :habitProp="(habit as Habit)" />
+      <HabitBox
+        v-for="habit in habits"
+        :habitProp="(habit as Habit)"
+        :currentDay="currentDay"
+      />
     </div>
     <div v-if="habits == undefined || habits.length == 0">
       Nothing here yet.
@@ -14,17 +18,28 @@ import HabitBox from "./HabitBox.vue";
 </template>
 <script lang="ts">
 import { useHabitsStore, Habit } from "@/stores/habits";
+import { useCalendarStore, AppDay } from "@/stores/calendar";
 export default {
   data() {
     return {
       habits: [] as Habit[],
+      currentDay: {} as AppDay,
     };
   },
   mounted() {
+    // habits
     const habitsStore = useHabitsStore();
     this.habits = habitsStore.habits;
-    habitsStore.$subscribe((mutation, state) => {
+    habitsStore.$subscribe((_, state) => {
       this.habits = state.habits;
+    });
+
+    // calendar and today
+    const calendarStore = useCalendarStore();
+    this.currentDay = calendarStore.currentDay;
+    calendarStore.loadCurrentDay();
+    calendarStore.$subscribe((_, state) => {
+      this.currentDay = state.currentDay;
     });
   },
   methods: {
@@ -52,7 +67,6 @@ h2:hover span {
   margin-left: 8px;
 }
 #habits-box {
-  background: hsla(180, 100%, 37%, 0.2);
   padding: 1rem;
   color: var(--color-heading);
 }
