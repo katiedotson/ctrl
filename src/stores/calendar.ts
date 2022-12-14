@@ -90,11 +90,22 @@ export const useCalendarStore = defineStore("calendar", {
     },
     loadCalendar() {
       const result = this.$state.allDates.filter((appDay) => {
-        return moment(appDay.date).isSameOrAfter(
-          moment(this.$state.startDate).startOf("D")
+        return (
+          moment(appDay.date).isSameOrAfter(
+            moment(this.$state.startDate).startOf("D")
+          ) &&
+          moment(appDay.date).isSameOrBefore(
+            moment(this.$state.startDate).startOf("D").add("days", 6)
+          )
         );
       });
       this.$state.calendar = result;
+    },
+    changeStartDate(numOfWeeks: number) {
+      this.$state.startDate = moment(this.$state.startDate)
+        .add("weeks", numOfWeeks)
+        .toDate();
+      this.loadCalendar();
     },
   },
 });

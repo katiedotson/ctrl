@@ -26,6 +26,11 @@ import EditHabitDay from "./EditHabitDay.vue";
         </tbody>
       </table>
     </div>
+    <div>
+      <h2>Week of: {{ getStartDateFormatted() }}</h2>
+      <button @click="changeWeek(-1)">&larr;</button>
+      <button @click="changeWeek(1)">&rarr;</button>
+    </div>
     <Modal v-if="dateModalDay" @close-modal="closeDateModal">
       <template v-slot:title> Edit Day </template>
       <template v-slot:content>
@@ -40,11 +45,14 @@ import { AppDay, useCalendarStore } from "@/stores/calendar";
 import moment from "moment";
 export default {
   mounted() {
+    // habits
     const habitsStore = useHabitsStore();
     this.habits = habitsStore.habits;
     habitsStore.$subscribe((_, state) => {
       this.habits = state.habits;
     });
+
+    // calendar
     const calendarStore = useCalendarStore();
     this.days = calendarStore.calendar;
     calendarStore.loadCalendar();
@@ -54,12 +62,19 @@ export default {
       },
       { detached: true }
     );
+
+    // start date
+    this.startDate = calendarStore.startDate;
+    calendarStore.$subscribe((_, state) => {
+      this.startDate = state.startDate;
+    });
   },
   data() {
     return {
       habits: [] as Habit[],
       days: [] as AppDay[],
       dateModalDay: undefined as AppDay | undefined,
+      startDate: undefined as Date | undefined,
     };
   },
   methods: {
@@ -77,6 +92,13 @@ export default {
     },
     closeDateModal() {
       this.dateModalDay = undefined;
+    },
+    getStartDateFormatted(): string {
+      return moment(this.startDate).format("dddd MMMM Do, YYYY");
+    },
+    changeWeek(increment: number) {
+      const calendarStore = useCalendarStore();
+      calendarStore.changeStartDate(increment);
     },
   },
 };
@@ -128,5 +150,11 @@ th:first-child {
   -webkit-animation: glow 1s ease-in-out infinite alternate;
   -moz-animation: glow 1s ease-in-out infinite alternate;
   animation: glow 1s ease-in-out infinite alternate;
+}
+button {
+  background: none;
+  color: var(--color-text);
+  border: none;
+  cursor: pointer;
 }
 </style>
