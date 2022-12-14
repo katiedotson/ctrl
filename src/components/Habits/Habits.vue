@@ -28,8 +28,10 @@ import EditHabitDay from "./EditHabitDay.vue";
     </div>
     <div>
       <h2>Week of: {{ getStartDateFormatted() }}</h2>
-      <button @click="changeWeek(-1)">&larr;</button>
-      <button @click="changeWeek(1)">&rarr;</button>
+      <div class="button-container">
+        <button @click="changeWeek(-1)">&larr;</button>
+        <button @click="changeWeek(1)">&rarr;</button>
+      </div>
     </div>
     <Modal v-if="dateModalDay" @close-modal="closeDateModal">
       <template v-slot:title> Edit Day </template>
@@ -156,5 +158,14 @@ button {
   color: var(--color-text);
   border: none;
   cursor: pointer;
+  font-size: 3rem;
+}
+button:hover {
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+.button-container button:last-child {
+  float: right;
 }
 </style>

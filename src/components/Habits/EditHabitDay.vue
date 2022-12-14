@@ -3,8 +3,8 @@
     <h1>Date: {{ formattedDate() }}</h1>
     <hr />
     <div class="edit-day-habit" v-for="habit in habits">
-      <label class="container"
-        >{{ habit.name }}
+      <label class="container">
+        <p>{{ habit.name }}</p>
         <input
           type="checkbox"
           :checked="showHabitCheckForDate(habit)"
@@ -43,15 +43,20 @@ export default {
       calendarStore.toggleHabitForDate(this.$props?.day, habit);
     },
     formattedDate(): string {
-      return DateTime.fromJSDate(this.$props.day.date).toFormat("ddd MMM D");
+      return DateTime.fromJSDate(this.$props.day.date).toFormat("DDDD");
     },
   },
 };
 </script>
 <style scoped>
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
 .edit-day-habit {
   display: flex;
   margin-top: 12px;
+  height: 2.5rem;
 }
 .container {
   display: block;
@@ -64,7 +69,7 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  line-height: 1rem;
+  line-height: 2rem;
 }
 .container input {
   position: absolute;
@@ -81,11 +86,15 @@ export default {
   width: 25px;
   background-color: #eee;
 }
+.container p {
+  font-size: 1rem;
+  line-height: 2rem;
+}
 .container:hover input ~ .checkmark {
   background-color: #ccc;
 }
 .container input:checked ~ .checkmark {
-  background-color: #2196f3;
+  background-color: #18b82b8b;
 }
 .checkmark:after {
   content: "";
@@ -100,7 +109,7 @@ export default {
   top: 5px;
   width: 5px;
   height: 10px;
-  border: solid white;
+  border: solid rgba(255, 255, 255, 0.661);
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
