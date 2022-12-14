@@ -2,19 +2,7 @@ import { defineStore } from "pinia";
 
 export const useHabitsStore = defineStore("habits", {
   state: () => ({
-    habits: [
-      {
-        name: "Food",
-        id: "0",
-        checkIcon: "&#129379;",
-      },
-      { name: "OTF", id: "1", checkIcon: "&#128170;" },
-      { name: "Meditate", id: "2", checkIcon: "&#9889;" },
-      { name: "Read", id: "3", checkIcon: "&#128218;" },
-      { name: "Learn", id: "4", checkIcon: "&#127891;" },
-      { name: "Water", id: "5", checkIcon: "&#9889;" },
-      { name: "Stretch", id: "6", checkIcon: "&#9889;" },
-    ] as Habit[],
+    habits: [] as Habit[],
     showHabitModal: "" as string,
     currentHabit: undefined as Habit | undefined,
   }),
