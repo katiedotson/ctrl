@@ -74,9 +74,9 @@ export const useCalendarStore = defineStore("calendar", {
         return calendarDay;
       });
     },
-    toggleHabitForDate(date: AppDay, habit: Habit) {
+    toggleHabitForDate(date: AppDay | undefined, habit: Habit) {
       this.$state.calendar = this.$state.calendar.map((day) => {
-        if (day.date == date.date) {
+        if (day.date == date?.date) {
           if (day.habitsCompleted.some((id) => id == habit.id)) {
             day.habitsCompleted = day.habitsCompleted.filter(
               (id) => id != habit.id

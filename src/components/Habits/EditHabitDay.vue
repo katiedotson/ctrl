@@ -16,29 +16,33 @@
   </section>
 </template>
 <script lang="ts">
-import { Habit } from "@/stores/habits";
+import type { Habit } from "@/stores/habits";
 import { AppDay, useCalendarStore } from "@/stores/calendar";
 import moment from "moment";
 export default {
   props: {
     habits: {
-      type: Array<Habit>,
+      type: Array as () => Array<Habit>,
+      required: true,
     },
     day: {
       type: AppDay,
+      required: true,
     },
   },
   methods: {
     showHabitCheckForDate(habit: Habit): Boolean {
-      return this.$props.day.habitsCompleted.some(
-        (habitId) => habitId == habit.id
+      return (
+        this.$props.day.habitsCompleted.some(
+          (habitId: string) => habitId == habit.id
+        ) ?? false
       );
     },
     checkboxChange(habit: Habit) {
       const calendarStore = useCalendarStore();
-      calendarStore.toggleHabitForDate(this.$props.day, habit);
+      calendarStore.toggleHabitForDate(this.$props?.day, habit);
     },
-    formattedDate() {
+    formattedDate(): string {
       return moment(this.$props.day.date).format("ddd MMM D");
     },
   },
