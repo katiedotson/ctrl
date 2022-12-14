@@ -1,3 +1,6 @@
+<script setup lang="ts">
+import Modal from "../Modal/Modal.vue";
+</script>
 <template>
   <section>
     <h1>Habits</h1>
@@ -8,21 +11,43 @@
           <th scope="col" v-for="habit in habits">{{ habit.name }}</th>
         </thead>
         <tbody>
-          <tr v-for="date in dates">
-            <th v-html="getFormattedDate(date)"></th>
+          <tr v-for="day in days">
+            <th
+              class="date"
+              v-html="getFormattedDate(day)"
+              @click="dayClicked(day)"
+            ></th>
             <td
               v-for="habit in habits"
-              v-html="getFormattedIcon(habit, date)"
+              v-html="getFormattedIcon(habit, day)"
             ></td>
           </tr>
         </tbody>
       </table>
     </div>
+    <Modal v-if="dateModalDate" @close-modal="closeDateModal">
+      <template v-slot:title> Edit Day </template>
+      <template v-slot:content>
+        <h1>Date: {{ formattedDateModalDay() }}</h1>
+        <hr />
+        <div class="edit-day-habit" v-for="habit in habits">
+          <label class="container"
+            >{{ habit.name }}
+            <input
+              type="checkbox"
+              :checked="showHabitCheckForDate(habit)"
+              @change="checkboxChange(habit)"
+            />
+            <span class="checkmark"></span>
+          </label>
+        </div>
+      </template>
+    </Modal>
   </section>
 </template>
 <script lang="ts">
 import { Habit, useHabitsStore } from "@/stores/habits";
-import { useCalendarStore } from "@/stores/calendar";
+import { AppDay, useCalendarStore } from "@/stores/calendar";
 import moment from "moment";
 export default {
   mounted() {
@@ -32,23 +57,45 @@ export default {
       this.habits = state.habits;
     });
     const calendarStore = useCalendarStore();
-    this.dates = calendarStore.calendar;
+    this.days = calendarStore.calendar;
+    calendarStore.$subscribe((_, state) => {
+      this.days = state.calendar;
+    });
   },
   data() {
     return {
       habits: [] as Habit[],
-      dates: [] as any[],
+      days: [] as AppDay[],
+      dateModalDate: undefined as any | undefined,
     };
   },
   methods: {
-    getFormattedDate(date: any): string {
-      return moment(date.date).format("ddd MMM D");
+    getFormattedDate(day: AppDay): string {
+      return moment(day.date).format("ddd MMM D");
     },
     getFormattedIcon(habit: Habit, date: any): string {
       if (date.habitsCompleted.some((it: any) => it == habit.id)) {
         return habit.checkIcon;
       }
       return "";
+    },
+    dayClicked(day: AppDay) {
+      this.dateModalDate = day;
+    },
+    closeDateModal() {
+      this.dateModalDate = null;
+    },
+    showHabitCheckForDate(habit: Habit): Boolean {
+      return this.dateModalDate.habitsCompleted.some(
+        (habitId) => habitId == habit.id
+      );
+    },
+    checkboxChange(habit: Habit) {
+      const calendarStore = useCalendarStore();
+      calendarStore.toggleHabitForDate(this.dateModalDate, habit);
+    },
+    formattedDateModalDay() {
+      return moment(this.dateModalDate.date).format("ddd MMM D");
     },
   },
 };
@@ -92,5 +139,85 @@ th:first-child {
   z-index: 2;
   text-align: left;
   padding: 26px 12px;
+}
+.date {
+  cursor: pointer;
+}
+.date:hover {
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+.edit-day-habit {
+  display: flex;
+  margin-top: 12px;
+}
+/* The container */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  line-height: 1rem;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2196f3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 </style>

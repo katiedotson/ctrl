@@ -12,6 +12,7 @@ export default {
 </script>
 <style scoped>
 div.back-arrow {
+  width: min-content;
   font-size: 4rem;
   display: block;
   cursor: pointer;
