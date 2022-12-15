@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Habits from "./Habits.vue"
 import Time from "./Time.vue"
-import Modal from "../Modal/Modal.vue"
 import EditHabit from "./EditHabit.vue"
 import Welcome from "./Welcome.vue"
 import Login from "./Login.vue"
+import Modal from "@/components/Modal/Modal.vue"
+import Loading from "@/components/Loading/Loading.vue"
 </script>
 
 <template>
@@ -22,6 +23,7 @@ import Login from "./Login.vue"
   <section v-if="!user">
     <Login />
   </section>
+  <Loading :show-loading="loading" />
 </template>
 
 <script lang="ts">
@@ -44,8 +46,13 @@ export default {
 
     // user
     const userStore = useUserStore()
+    this.user = userStore.name
+    this.loading = userStore.loading
     userStore.$subscribe((_, state) => {
       this.user = state.name
+    })
+    userStore.$subscribe((_, state) => {
+      this.loading = state.loading
     })
   },
   methods: {
@@ -74,6 +81,7 @@ export default {
         checkIcon: "&#9889;",
       } as Habit,
       user: "" as string,
+      loading: false,
     }
   },
 }
