@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore"
 import type { FirestoreDataConverter } from "firebase/firestore"
 import config from "./config"
+import { localRepo } from "./local"
 
 const firebaseConfig = config
 
@@ -46,21 +47,23 @@ export default {
       console.error(error)
     }
   },
-  loadUserData: async (userId: string): Promise<UserData | undefined> => {
-    try {
-      const result = await getDoc(
-        doc(db, "users", userId).withConverter(userDataConverter)
-      )
-      console.log(result.data())
-
-      return result.data() as UserData
-    } catch (error) {
-      console.error(error)
+  loadUserData: async (): Promise<UserData | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      try {
+        const result = await getDoc(
+          doc(db, "users", userId).withConverter(userDataConverter)
+        )
+        return result.data() as UserData
+      } catch (error) {
+        console.error(error)
+      }
     }
+    return undefined
   },
 }
 
-interface UserData {
+export interface UserData {
   calendar: AppDay[]
   habits: Habit[]
   name: string
