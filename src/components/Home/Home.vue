@@ -3,9 +3,11 @@ import Habits from "./Habits.vue"
 import Time from "./Time.vue"
 import Modal from "../Modal/Modal.vue"
 import EditHabit from "./EditHabit.vue"
+import Welcome from "./Welcome.vue"
 </script>
 
 <template>
+  <Welcome />
   <Habits @habits-clicked="habitsTitleClicked" />
   <Time :currentTime="currentTime" />
   <Modal @close-modal="closeHabitModal" v-if="showHabitModal">
