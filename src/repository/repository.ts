@@ -1,13 +1,7 @@
 import type { AppDay } from "@/stores/calendar"
 import type { Habit } from "@/stores/habits"
 import { initializeApp } from "firebase/app"
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDoc,
-  doc,
-} from "firebase/firestore"
+import { getFirestore, setDoc, getDoc, doc } from "firebase/firestore"
 import type { FirestoreDataConverter } from "firebase/firestore"
 import config from "./config"
 import { localRepo } from "./local"
@@ -24,6 +18,7 @@ const userDataConverter: FirestoreDataConverter<UserData> = {
   fromFirestore: (snapshot, options): UserData => {
     const userData = snapshot.data(options)
     return {
+      userId: userData.userId,
       name: userData.name,
       habits: userData.habits,
       calendar: userData.calendar.map((response: any) => {
@@ -37,15 +32,14 @@ const userDataConverter: FirestoreDataConverter<UserData> = {
 }
 
 export default {
-  async addUser(user: UserData) {
+  async addUser(user: UserData): Promise<UserData | undefined> {
     try {
-      await addDoc(collection(db, "users"), {
-        calendar: user.calendar,
-        habits: user.habits,
-      })
+      await setDoc(doc(db, "users", user.userId), user)
+      return user
     } catch (error) {
       console.error(error)
     }
+    return undefined
   },
   loadUserData: async (): Promise<UserData | undefined> => {
     const userId = localRepo.loadUserId()
@@ -64,6 +58,7 @@ export default {
 }
 
 export interface UserData {
+  userId: string
   calendar: AppDay[]
   habits: Habit[]
   name: string

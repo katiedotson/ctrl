@@ -6,7 +6,6 @@ export const useUserStore = defineStore("user", {
   }),
   actions: {
     initialize(name: string) {
-      console.log(name)
       this.$state.name = name
     },
   },
