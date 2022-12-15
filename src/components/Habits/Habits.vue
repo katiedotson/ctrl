@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Modal from "../Modal/Modal.vue";
-import EditHabitDay from "./EditHabitDay.vue";
+import Modal from "../Modal/Modal.vue"
+import EditHabitDay from "./EditHabitDay.vue"
 </script>
 <template>
   <section>
@@ -9,10 +9,12 @@ import EditHabitDay from "./EditHabitDay.vue";
       <table id="main-table">
         <thead>
           <th scope="col"></th>
-          <th scope="col" v-for="habit in habits">{{ habit.name }}</th>
+          <th scope="col" v-for="habit in habits" v-bind:key="habit.id">
+            {{ habit.name }}
+          </th>
         </thead>
         <tbody>
-          <tr v-for="day in days">
+          <tr v-for="day in days" v-bind:key="day.date">
             <th
               class="date"
               v-html="getFormattedDate(day)"
@@ -21,6 +23,7 @@ import EditHabitDay from "./EditHabitDay.vue";
             <td
               v-for="habit in habits"
               v-html="getFormattedIcon(habit, day)"
+              v-bind:key="habit.id"
             ></td>
           </tr>
         </tbody>
@@ -42,33 +45,33 @@ import EditHabitDay from "./EditHabitDay.vue";
   </section>
 </template>
 <script lang="ts">
-import { Habit, useHabitsStore } from "@/stores/habits";
-import { AppDay, useCalendarStore } from "@/stores/calendar";
-import { DateTime } from "luxon";
+import { Habit, useHabitsStore } from "@/stores/habits"
+import { AppDay, useCalendarStore } from "@/stores/calendar"
+import { DateTime } from "luxon"
 export default {
   mounted() {
     // habits
-    const habitsStore = useHabitsStore();
-    this.habits = habitsStore.habits;
+    const habitsStore = useHabitsStore()
+    this.habits = habitsStore.habits
     habitsStore.$subscribe((_, state) => {
-      this.habits = state.habits;
-    });
+      this.habits = state.habits
+    })
 
     // calendar
-    const calendarStore = useCalendarStore();
-    this.days = calendarStore.calendar;
+    const calendarStore = useCalendarStore()
+    this.days = calendarStore.calendar
     calendarStore.$subscribe(
       (_, state) => {
-        this.days = state.calendar;
+        this.days = state.calendar
       },
       { detached: true }
-    );
+    )
 
     // start date
-    this.startDate = calendarStore.startDate;
+    this.startDate = calendarStore.startDate
     calendarStore.$subscribe((_, state) => {
-      this.startDate = state.startDate;
-    });
+      this.startDate = state.startDate
+    })
   },
   data() {
     return {
@@ -76,33 +79,33 @@ export default {
       days: [] as AppDay[],
       dateModalDay: undefined as AppDay | undefined,
       startDate: undefined as Date | undefined,
-    };
+    }
   },
   methods: {
     getFormattedDate(day: AppDay): string {
-      return DateTime.fromJSDate(day.date).toFormat("EEE MMM d");
+      return DateTime.fromJSDate(day.date).toFormat("EEE MMM d")
     },
     getFormattedIcon(habit: Habit, date: any): string {
       if (date.habitsCompleted.some((it: any) => it == habit.id)) {
-        return habit.checkIcon;
+        return habit.checkIcon
       }
-      return "";
+      return ""
     },
     dayClicked(day: AppDay) {
-      this.dateModalDay = day;
+      this.dateModalDay = day
     },
     closeDateModal() {
-      this.dateModalDay = undefined;
+      this.dateModalDay = undefined
     },
     getStartDateFormatted(): string {
-      return DateTime.fromJSDate(this.startDate!!).toFormat("DDDD");
+      return DateTime.fromJSDate(this.startDate!!).toFormat("DDDD")
     },
     changeWeek(increment: number) {
-      const calendarStore = useCalendarStore();
-      calendarStore.changeStartDate(increment);
+      const calendarStore = useCalendarStore()
+      calendarStore.changeStartDate(increment)
     },
   },
-};
+}
 </script>
 <style scoped>
 .table-scroll {

@@ -7,6 +7,10 @@ export const useHabitsStore = defineStore("habits", {
     currentHabit: undefined as Habit | undefined,
   }),
   actions: {
+    initialize(habits: Habit[]) {
+      console.log(habits);
+      this.$state.habits = habits;
+    },
     showHabitModal(habitId: string) {
       this.$state.showHabitModal = habitId;
       this.$state.currentHabit = this.$state.habits.find(

@@ -5,10 +5,10 @@
 export default {
   methods: {
     backClicked() {
-      this.$emit("backArrowClicked");
+      this.$emit("backArrowClicked")
     },
   },
-};
+}
 </script>
 <style scoped>
 div.back-arrow {

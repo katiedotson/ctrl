@@ -2,7 +2,7 @@
   <section>
     <h1>Date: {{ formattedDate() }}</h1>
     <hr />
-    <div class="edit-day-habit" v-for="habit in habits">
+    <div class="edit-day-habit" v-for="habit in habits" v-bind:key="habit.id">
       <label class="container">
         <p>{{ habit.name }}</p>
         <input
@@ -16,9 +16,9 @@
   </section>
 </template>
 <script lang="ts">
-import type { Habit } from "@/stores/habits";
-import { AppDay, useCalendarStore } from "@/stores/calendar";
-import { DateTime } from "luxon";
+import type { Habit } from "@/stores/habits"
+import { AppDay, useCalendarStore } from "@/stores/calendar"
+import { DateTime } from "luxon"
 export default {
   props: {
     habits: {
@@ -36,17 +36,17 @@ export default {
         this.$props.day.habitsCompleted.some(
           (habitId: string) => habitId == habit.id
         ) ?? false
-      );
+      )
     },
     checkboxChange(habit: Habit) {
-      const calendarStore = useCalendarStore();
-      calendarStore.toggleHabitForDate(this.$props?.day, habit);
+      const calendarStore = useCalendarStore()
+      calendarStore.toggleHabitForDate(this.$props?.day, habit)
     },
     formattedDate(): string {
-      return DateTime.fromJSDate(this.$props.day.date).toFormat("DDDD");
+      return DateTime.fromJSDate(this.$props.day.date).toFormat("DDDD")
     },
   },
-};
+}
 </script>
 <style scoped>
 hr {

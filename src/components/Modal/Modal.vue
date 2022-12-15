@@ -20,10 +20,10 @@
 export default {
   methods: {
     closeModal() {
-      this.$emit("closeModal");
+      this.$emit("closeModal")
     },
   },
-};
+}
 </script>
 <style>
 .modal {

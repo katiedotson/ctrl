@@ -10,8 +10,8 @@
   </div>
 </template>
 <script lang="ts">
-import { Habit, useHabitsStore } from "@/stores/habits";
-import { AppDay, useCalendarStore } from "@/stores/calendar";
+import { Habit, useHabitsStore } from "@/stores/habits"
+import { AppDay, useCalendarStore } from "@/stores/calendar"
 export default {
   props: {
     habitProp: {
@@ -25,32 +25,32 @@ export default {
   },
   methods: {
     onClick: function () {
-      const calendarStore = useCalendarStore();
+      const calendarStore = useCalendarStore()
       calendarStore.toggleHabitForDate(
         this.$props.currentDay,
         this.$props.habitProp
-      );
+      )
     },
     onOpen: function () {
-      const habitsStore = useHabitsStore();
-      habitsStore.showHabitModal(this.habitProp.id);
+      const habitsStore = useHabitsStore()
+      habitsStore.showHabitModal(this.habitProp.id)
     },
     checkHabitCompleted(): Boolean {
-      const calendarStore = useCalendarStore();
-      return calendarStore.isHabitCompletedToday(this.habitProp);
+      const calendarStore = useCalendarStore()
+      return calendarStore.isHabitCompletedToday(this.habitProp)
     },
     getHtmlForHabit(): string {
-      const calendarStore = useCalendarStore();
-      const isCompleted = calendarStore.isHabitCompletedToday(this.habitProp);
+      const calendarStore = useCalendarStore()
+      const isCompleted = calendarStore.isHabitCompletedToday(this.habitProp)
 
       if (isCompleted) {
-        return this.habitProp.checkIcon;
+        return this.habitProp.checkIcon
       } else {
-        return "";
+        return ""
       }
     },
   },
-};
+}
 </script>
 <style scoped>
 .habit {

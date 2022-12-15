@@ -10,7 +10,9 @@ export const useCalendarStore = defineStore("calendar", {
     currentDay: {} as AppDay,
   }),
   actions: {
-    initialize() {
+    initialize(dates: AppDay[]) {
+      console.log(dates);
+      this.$state.allDates = dates;
       this.loadCurrentDay();
       this.loadCalendar();
     },

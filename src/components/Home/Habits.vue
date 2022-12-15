@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HabitBox from "./HabitBox.vue";
+import HabitBox from "./HabitBox.vue"
 </script>
 <template>
   <div id="habits-box">
@@ -7,8 +7,9 @@ import HabitBox from "./HabitBox.vue";
     <div v-if="habits != undefined && habits.length != 0" id="habits-container">
       <HabitBox
         v-for="habit in habits"
-        :habitProp="(habit as Habit)"
+        :habitProp="habit"
         :currentDay="currentDay"
+        v-bind:key="habit.id"
       />
     </div>
     <div v-if="habits == undefined || habits.length == 0">
@@ -17,36 +18,36 @@ import HabitBox from "./HabitBox.vue";
   </div>
 </template>
 <script lang="ts">
-import { useHabitsStore, Habit } from "@/stores/habits";
-import { useCalendarStore, AppDay } from "@/stores/calendar";
+import { useHabitsStore, Habit } from "@/stores/habits"
+import { useCalendarStore, AppDay } from "@/stores/calendar"
 export default {
   data() {
     return {
       habits: [] as Habit[],
       currentDay: {} as AppDay,
-    };
+    }
   },
   mounted() {
     // habits
-    const habitsStore = useHabitsStore();
-    this.habits = habitsStore.habits;
+    const habitsStore = useHabitsStore()
+    this.habits = habitsStore.habits
     habitsStore.$subscribe((_, state) => {
-      this.habits = state.habits;
-    });
+      this.habits = state.habits
+    })
 
     // calendar and today
-    const calendarStore = useCalendarStore();
-    this.currentDay = calendarStore.currentDay;
+    const calendarStore = useCalendarStore()
+    this.currentDay = calendarStore.currentDay
     calendarStore.$subscribe((_, state) => {
-      this.currentDay = state.currentDay;
-    });
+      this.currentDay = state.currentDay
+    })
   },
   methods: {
     habitsClicked() {
-      this.$emit("habitsClicked");
+      this.$emit("habitsClicked")
     },
   },
-};
+}
 </script>
 <style scoped>
 h2 {

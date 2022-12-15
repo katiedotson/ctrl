@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Habits from "../components/Habits/Habits.vue";
-import BackArrow from "../components/BackArrow/BackArrow.vue";
+import Habits from "../components/Habits/Habits.vue"
+import BackArrow from "../components/BackArrow/BackArrow.vue"
 </script>
 
 <template>
@@ -13,8 +13,8 @@ import BackArrow from "../components/BackArrow/BackArrow.vue";
 export default {
   methods: {
     navigateBack() {
-      this.$router.back();
+      this.$router.back()
     },
   },
-};
+}
 </script>

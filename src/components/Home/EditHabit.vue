@@ -13,29 +13,29 @@
   </section>
 </template>
 <script lang="ts">
-import { useHabitsStore, Habit } from "@/stores/habits";
+import { useHabitsStore, Habit } from "@/stores/habits"
 export default {
   props: {
     habitProp: {
       type: Habit,
-      required: true
+      required: true,
     },
   },
   mounted() {
-    this.checkIcon = this.$props.habitProp.checkIcon;
-    this.id = this.$props.habitProp.id;
-    this.habitName = this.$props.habitProp.name;
+    this.checkIcon = this.$props.habitProp.checkIcon
+    this.id = this.$props.habitProp.id
+    this.habitName = this.$props.habitProp.name
   },
   methods: {
     saveUpdates() {
-      const habitsStore = useHabitsStore();
-      habitsStore.saveHabitUpdates(this.id, this.habitName, this.checkIcon);
-      habitsStore.showHabitModal("");
+      const habitsStore = useHabitsStore()
+      habitsStore.saveHabitUpdates(this.id, this.habitName, this.checkIcon)
+      habitsStore.showHabitModal("")
     },
     deleteHabit() {
-      const habitsStore = useHabitsStore();
-      habitsStore.deleteHabit(this.id);
-      habitsStore.showHabitModal("");
+      const habitsStore = useHabitsStore()
+      habitsStore.deleteHabit(this.id)
+      habitsStore.showHabitModal("")
     },
   },
   data() {
@@ -43,9 +43,9 @@ export default {
       checkIcon: "",
       id: "",
       habitName: "",
-    };
+    }
   },
-};
+}
 </script>
 <style scoped>
 input {
