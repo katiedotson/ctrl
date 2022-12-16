@@ -25,7 +25,7 @@ getRedirectResult(getAuth())
     userStore.loadUserData(credential, result)
   })
   .catch((error) => {
-    console.log(error)
+    console.error(error)
   })
 
 app.mount("#app")

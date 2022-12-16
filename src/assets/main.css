@@ -44,7 +44,9 @@ hr {
     text-shadow: 0 0 20px #00ff7f;
   }
 }
-
+button {
+  font-family: "IBM Plex Mono", monospace;
+}
 .buttons {
   display: block;
   margin-left: auto;

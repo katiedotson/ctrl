@@ -7,7 +7,7 @@ import Modal from "../Modal/Modal.vue"
   <section>
     <ul class="settings-bar">
       <li>
-        <button @click="settingsClicked" aria-label="Open settings">
+        <button v-if="name" @click="settingsClicked" aria-label="Open settings">
           <span class="material-icons"> settings </span>
         </button>
       </li>
@@ -22,6 +22,9 @@ import Modal from "../Modal/Modal.vue"
         <div class="buttons">
           <button @click="saveUpdates">Save</button>
         </div>
+        <div class="buttons">
+          <button v-if="name" @click="logout">Log Out</button>
+        </div>
       </template>
     </Modal>
   </section>
@@ -33,7 +36,6 @@ export default {
     this.name = userStore.name
     userStore.$subscribe((_, state) => {
       this.name = state.name
-      console.log("name updated settings")
     })
   },
   data() {
@@ -53,6 +55,17 @@ export default {
       const userStore = useUserStore()
       userStore
         .updateUserName(this.name)
+        .then((_) => {
+          this.settingsOpen = false
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    },
+    logout() {
+      const userStore = useUserStore()
+      userStore
+        .logout()
         .then((_) => {
           this.settingsOpen = false
         })

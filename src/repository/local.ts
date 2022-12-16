@@ -8,6 +8,10 @@ export const localRepo = {
   saveUid(uid: string) {
     localStorage.setItem(keys.userId, uid)
   },
+  clearAuth() {
+    localStorage.removeItem(keys.userId)
+    localStorage.removeItem(keys.token)
+  },
 }
 
 const keys = {

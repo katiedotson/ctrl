@@ -1,7 +1,12 @@
 import type { UserData } from "@/repository/repository"
 import { defineStore } from "pinia"
 import repository from "@/repository/repository"
-import type { OAuthCredential, UserCredential } from "firebase/auth"
+import {
+  getAuth,
+  signOut,
+  type OAuthCredential,
+  type UserCredential,
+} from "firebase/auth"
 import { localRepo } from "@/repository/local"
 import { useCalendarStore } from "./calendar"
 import { useHabitsStore } from "./habits"
@@ -12,6 +17,21 @@ export const useUserStore = defineStore("user", {
     name: "" as string,
   }),
   actions: {
+    async logout(): Promise<void> {
+      this.$state.loading = true
+      return signOut(getAuth())
+        .then(() => {
+          localRepo.clearAuth()
+          this.$state.name = ""
+          this.$state.loading = false
+          return
+        })
+        .catch((err) => {
+          this.$state.loading = false
+          console.error(err)
+          return
+        })
+    },
     async loadUserDataFromCache() {
       this.$state.loading = true
       repository
