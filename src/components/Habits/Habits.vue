@@ -2,22 +2,37 @@
 import Modal from "../Modal/Modal.vue"
 import EditHabitDay from "./EditHabitDay.vue"
 import HabitsTable from "./HabitsTable.vue"
+import AddHabit from "./AddHabit.vue"
 </script>
 <template>
   <section>
     <h1>Habits</h1>
-    <habits-table :habits="habits" :days="days" @day-clicked="dayClicked" />
-    <div>
+    <div v-if="habits.length > 0">
+      <habits-table :habits="habits" :days="days" @day-clicked="dayClicked" />
       <h2>Week of: {{ getStartDateFormatted() }}</h2>
       <div class="button-container">
         <button @click="changeWeek(-1)">&larr;</button>
         <button @click="changeWeek(1)">&rarr;</button>
       </div>
     </div>
+    <div v-else>
+      <h4>Nothing here yet.</h4>
+    </div>
+    <div class="buttons">
+      <button @click="addNewHabit">Add a habit</button>
+    </div>
+    <!-- Edit day modal -->
     <Modal v-if="dateModalDay" @close-modal="closeDateModal">
       <template v-slot:title> Edit Day </template>
       <template v-slot:content>
         <EditHabitDay :habits="habits" :day="dateModalDay" />
+      </template>
+    </Modal>
+    <!-- Add new habit modal -->
+    <Modal v-if="newHabit" @close-modal="closeNewHabitModal">
+      <template v-slot:title> Add a new habit </template>
+      <template v-slot:content>
+        <AddHabit :newHabitProp="newHabit" @save-new-habit="saveNewHabit" />
       </template>
     </Modal>
   </section>
@@ -57,6 +72,7 @@ export default {
       days: [] as AppDay[],
       dateModalDay: undefined as AppDay | undefined,
       startDate: undefined as Date | undefined,
+      newHabit: undefined as Habit | undefined,
     }
   },
   methods: {
@@ -73,6 +89,16 @@ export default {
     dayClicked(day: AppDay) {
       this.dateModalDay = day
     },
+    addNewHabit() {
+      this.newHabit = { name: "", id: "", checkIcon: "" }
+    },
+    closeNewHabitModal() {
+      this.newHabit = undefined
+    },
+    saveNewHabit(newHabit: Habit) {
+      console.log(newHabit)
+      this.closeNewHabitModal()
+    },
   },
 }
 </script>
@@ -85,19 +111,25 @@ export default {
   -moz-animation: glow 1s ease-in-out infinite alternate;
   animation: glow 1s ease-in-out infinite alternate;
 }
-button {
+.button-container button {
   background: none;
   color: var(--color-text);
   border: none;
   cursor: pointer;
   font-size: 3rem;
 }
-button:hover {
+.button-container button:hover {
   -webkit-animation: glow 1s ease-in-out infinite alternate;
   -moz-animation: glow 1s ease-in-out infinite alternate;
   animation: glow 1s ease-in-out infinite alternate;
 }
 .button-container button:last-child {
   float: right;
+}
+.buttons {
+  margin: 20px auto;
+}
+.buttons :last-child {
+  margin-left: 0;
 }
 </style>
