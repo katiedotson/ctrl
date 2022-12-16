@@ -32,7 +32,6 @@ import { useUserStore } from "@/stores/user"
 
 export default {
   mounted() {
-    console.log("home mounted")
     // listen to habit click
     const habitsStore = useHabitsStore()
     habitsStore.$subscribe((_, state) => {
@@ -51,7 +50,6 @@ export default {
     this.loading = userStore.loading
     userStore.$subscribe((_, state) => {
       this.user = state.name
-      console.log("name updated home")
     })
     userStore.$subscribe((_, state) => {
       this.loading = state.loading
