@@ -15,6 +15,7 @@ export default {
 </script>
 <style scoped>
 .loading-background {
+  z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;

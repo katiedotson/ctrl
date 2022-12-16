@@ -23,7 +23,6 @@ import Loading from "@/components/Loading/Loading.vue"
   <section v-if="!user">
     <Login />
   </section>
-  <Loading :show-loading="loading" />
 </template>
 
 <script lang="ts">
@@ -47,12 +46,8 @@ export default {
     // user
     const userStore = useUserStore()
     this.user = userStore.name
-    this.loading = userStore.loading
     userStore.$subscribe((_, state) => {
       this.user = state.name
-    })
-    userStore.$subscribe((_, state) => {
-      this.loading = state.loading
     })
   },
   methods: {
@@ -81,7 +76,6 @@ export default {
         checkIcon: "&#9889;",
       } as Habit,
       user: "" as string,
-      loading: false,
     }
   },
 }
