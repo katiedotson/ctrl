@@ -1,7 +1,13 @@
 import type { AppDay } from "@/stores/calendar"
 import type { Habit } from "@/stores/habits"
 import { initializeApp } from "firebase/app"
-import { getFirestore, setDoc, getDoc, doc } from "firebase/firestore"
+import {
+  getFirestore,
+  setDoc,
+  getDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore"
 import type { FirestoreDataConverter } from "firebase/firestore"
 import config from "./config"
 import { localRepo } from "./local"
@@ -32,7 +38,7 @@ const userDataConverter: FirestoreDataConverter<UserData> = {
 }
 
 export default {
-  async addUser(user: UserData): Promise<UserData | undefined> {
+  addUser: async (user: UserData): Promise<UserData | undefined> => {
     try {
       await setDoc(doc(db, "users", user.userId), user)
       return user
@@ -54,6 +60,16 @@ export default {
       }
     }
     return undefined
+  },
+  updateUserName: async (name: string): Promise<string | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const docRef = doc(db, "users", userId)
+      await updateDoc(docRef, {
+        name,
+      })
+      return name
+    }
   },
 }
 

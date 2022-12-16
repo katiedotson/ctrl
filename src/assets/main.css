@@ -3,10 +3,68 @@
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 1rem;
   font-weight: normal;
 }
 
 a {
   text-decoration: none;
+}
+
+section {
+  padding: 1rem;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+}
+label {
+  margin-top: 1rem;
+  display: block;
+}
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #00ff7f;
+  }
+  to {
+    text-shadow: 0 0 20px #00ff7f;
+  }
+}
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #00ff7f;
+  }
+  to {
+    text-shadow: 0 0 20px #00ff7f;
+  }
+}
+
+.buttons {
+  display: block;
+  margin-left: auto;
+  width: max-content;
+}
+.buttons button.delete {
+  background-color: #c70039;
+  color: white;
+}
+.buttons button {
+  display: inline-block;
+  background-color: #33ffbd;
+  border: none;
+  color: black;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+.buttons :last-child {
+  margin-left: 12px;
 }

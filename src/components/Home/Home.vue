@@ -10,7 +10,7 @@ import Loading from "@/components/Loading/Loading.vue"
 
 <template>
   <section v-if="user">
-    <Welcome />
+    <Welcome :name="user" />
     <Habits @habits-clicked="habitsTitleClicked" />
     <Time :currentTime="currentTime" />
     <Modal @close-modal="closeHabitModal" v-if="showHabitModal">
@@ -32,6 +32,7 @@ import { useUserStore } from "@/stores/user"
 
 export default {
   mounted() {
+    console.log("home mounted")
     // listen to habit click
     const habitsStore = useHabitsStore()
     habitsStore.$subscribe((_, state) => {
@@ -50,6 +51,7 @@ export default {
     this.loading = userStore.loading
     userStore.$subscribe((_, state) => {
       this.user = state.name
+      console.log("name updated home")
     })
     userStore.$subscribe((_, state) => {
       this.loading = state.loading

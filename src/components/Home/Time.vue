@@ -28,15 +28,18 @@ export default {
 </script>
 <style scoped>
 #date {
+  padding-top: 1em;
   font-family: "Marck Script", cursive;
-  padding: 1rem;
   font-size: 3rem;
   color: var(--color-heading);
 }
 #time {
+  padding-top: 1em;
   font-family: "VT323", monospace;
-  padding: 1rem;
   font-size: 3rem;
   color: var(--color-heading);
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
 }
 </style>

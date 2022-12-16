@@ -16,6 +16,7 @@ div.back-arrow {
   font-size: 4rem;
   display: block;
   cursor: pointer;
+  padding: 1rem;
 }
 div.back-arrow:hover {
   -webkit-animation: glow 1s ease-in-out infinite alternate;

@@ -51,6 +51,7 @@ export default {
 </script>
 <style scoped>
 h2 {
+  margin-top: 1em;
   font-size: 1rem;
   cursor: pointer;
 }
@@ -67,7 +68,6 @@ h2:hover span {
   margin-left: 8px;
 }
 #habits-box {
-  padding: 1rem;
   color: var(--color-heading);
 }
 #habits-container {

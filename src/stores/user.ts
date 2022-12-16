@@ -72,5 +72,22 @@ export const useUserStore = defineStore("user", {
       habitsStore.initialize(data!!.habits)
       this.$state.name = data.name
     },
+    async updateUserName(name: string): Promise<string | undefined> {
+      this.$state.loading = true
+      return repository
+        .updateUserName(name)
+        .then((result: string | undefined) => {
+          this.$state.loading = false
+          if (result) {
+            this.$state.name = name
+            return name
+          } else return undefined
+        })
+        .catch((err) => {
+          this.$state.loading = false
+          console.error(err)
+          return undefined
+        })
+    },
   },
 })
