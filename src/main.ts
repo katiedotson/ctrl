@@ -25,6 +25,7 @@ getRedirectResult(getAuth())
     userStore.loadUserData(credential, result)
   })
   .catch((error) => {
+    userStore.errorLoadingUser()
     console.error(error)
   })
 

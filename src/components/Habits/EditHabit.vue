@@ -30,12 +30,12 @@ export default {
     saveUpdates() {
       const habitsStore = useHabitsStore()
       habitsStore.saveHabitUpdates(this.id, this.habitName, this.checkIcon)
-      habitsStore.showHabitModal("")
+      this.$emit("modalClosed")
     },
     deleteHabit() {
       const habitsStore = useHabitsStore()
       habitsStore.deleteHabit(this.id)
-      habitsStore.showHabitModal("")
+      this.$emit("modalClosed")
     },
   },
   data() {

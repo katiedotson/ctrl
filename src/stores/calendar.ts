@@ -1,9 +1,11 @@
+import repository from "@/repository/repository"
 import { DateTime } from "luxon"
 import { defineStore } from "pinia"
 import type { Habit } from "./habits"
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
+    loading: true,
     calendar: [] as AppDay[],
     allDates: [] as AppDay[],
     startDate: DateTime.fromJSDate(new Date()).startOf("week").toJSDate(),
@@ -31,6 +33,7 @@ export const useCalendarStore = defineStore("calendar", {
         return thisDay >= startDay && thisDay <= endDay
       })
       this.$state.calendar = result
+      this.loading = false
     },
     checkIfDaysAreSame(dateOne: Date, dateTwo: Date): Boolean {
       return (
@@ -61,6 +64,7 @@ export const useCalendarStore = defineStore("calendar", {
       }
     },
     changeStartDate(numOfWeeks: number) {
+      this.loading = true
       this.$state.startDate = DateTime.fromJSDate(this.$state.startDate)
         .plus({ week: numOfWeeks })
         .toJSDate()
@@ -73,6 +77,9 @@ export const useCalendarStore = defineStore("calendar", {
       return matchingDay.habitsCompleted.some((habitId) => {
         return habitId == habit.id
       })
+    },
+    errorLoadingData() {
+      this.$state.loading = false
     },
   },
 })

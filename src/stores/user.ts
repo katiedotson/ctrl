@@ -86,6 +86,13 @@ export const useUserStore = defineStore("user", {
 
       return undefined
     },
+    errorLoadingUser() {
+      this.$state.loading = false
+      const calendarStore = useCalendarStore()
+      const habitsStore = useHabitsStore()
+      calendarStore.errorLoadingData()
+      habitsStore.errorLoadingData()
+    },
     initialCalendar(): AppDay[] {
       const calendar: AppDay[] = []
       const lastMonday = DateTime.fromJSDate(new Date()).startOf("week")
@@ -112,6 +119,7 @@ export const useUserStore = defineStore("user", {
       calendarStore.initialize(data!!.calendar)
       habitsStore.initialize(data!!.habits)
       this.$state.name = data.name
+      this.$state.loading = false
     },
     async updateUserName(name: string): Promise<string | undefined> {
       this.$state.loading = true

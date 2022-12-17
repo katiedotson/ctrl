@@ -53,6 +53,8 @@ export default {
   padding: 0.5rem;
   height: 200px;
   cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .check-wrapper {
   height: 100%;
@@ -68,6 +70,7 @@ export default {
   color: var(--color-on-highlight);
   position: absolute;
   left: 0px;
+  bottom: 0;
   padding: 4px;
 }
 .habit-name div {

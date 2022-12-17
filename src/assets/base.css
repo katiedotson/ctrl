@@ -45,7 +45,7 @@
     --color-background-soft: var(--black-soft);
     --color-background-mute: var(--black-mute);
 
-    --color-background-highlight: var(--black);
+    --color-background-highlight: var(--black-mute);
     --color-on-highlight: var(--white-mute);
 
     --color-border: var(--divider-dark-2);

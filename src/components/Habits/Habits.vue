@@ -45,7 +45,7 @@ import EditHabit from "./EditHabit.vue"
     <Modal @close-modal="closeHabitModal" v-if="editHabit">
       <template v-slot:title> Edit Habit </template>
       <template v-slot:content>
-        <EditHabit :habitProp="editHabit" />
+        <EditHabit :habitProp="editHabit" @modal-closed="closeHabitModal" />
       </template>
     </Modal>
   </section>
