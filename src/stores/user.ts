@@ -8,8 +8,9 @@ import {
   type UserCredential,
 } from "firebase/auth"
 import { localRepo } from "@/repository/local"
-import { useCalendarStore } from "./calendar"
-import { useHabitsStore } from "./habits"
+import { AppDay, useCalendarStore } from "./calendar"
+import { Habit, useHabitsStore } from "./habits"
+import { DateTime } from "luxon"
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -66,8 +67,8 @@ export const useUserStore = defineStore("user", {
             repository
               .addUser({
                 userId: result!!.user.uid,
-                calendar: [],
-                habits: [],
+                calendar: this.initialCalendar(),
+                habits: this.initialHabit(),
                 name: result!!.user.displayName ?? "",
               })
               .then((data: UserData | undefined) => {
@@ -84,6 +85,26 @@ export const useUserStore = defineStore("user", {
         })
 
       return undefined
+    },
+    initialCalendar(): AppDay[] {
+      const calendar: AppDay[] = []
+      const lastMonday = DateTime.fromJSDate(new Date()).startOf("week")
+      for (let index = 0; index < 7; index++) {
+        calendar.push({
+          date: lastMonday.plus({ days: index }).toJSDate(),
+          habitsCompleted: [],
+        })
+      }
+      return calendar
+    },
+    initialHabit(): Habit[] {
+      return [
+        {
+          name: "Sleep at least 6 hours",
+          id: "1",
+          checkIcon: "&#128164;",
+        },
+      ]
     },
     initialize(data: UserData) {
       const calendarStore = useCalendarStore()

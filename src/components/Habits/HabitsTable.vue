@@ -3,7 +3,12 @@
     <table id="main-table">
       <thead>
         <th scope="col"></th>
-        <th scope="col" v-for="habit in habits" v-bind:key="habit.id">
+        <th
+          scope="col"
+          v-for="habit in habits"
+          v-bind:key="habit.id"
+          @click="habitTitleClicked(habit)"
+        >
           {{ habit.name }}
         </th>
       </thead>
@@ -52,6 +57,9 @@ export default {
     dayClicked(day: AppDay) {
       this.$emit("dayClicked", day)
     },
+    habitTitleClicked(habit: Habit) {
+      this.$emit("habitClicked", habit)
+    },
   },
 }
 </script>
@@ -75,6 +83,7 @@ export default {
 }
 .table-scroll th,
 .table-scroll td {
+  max-width: 40px;
   padding: 5px;
   border: none;
   background: var(--color-background-soft);
@@ -87,6 +96,12 @@ export default {
   top: 0;
   z-index: 3;
 }
+.table-scroll thead th:hover {
+  cursor: pointer;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
 th:first-child {
   position: -webkit-sticky;
   position: sticky;
@@ -94,5 +109,11 @@ th:first-child {
   z-index: 2;
   text-align: left;
   padding: 26px 12px;
+  cursor: pointer;
+}
+th:first-child:hover {
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
 }
 </style>

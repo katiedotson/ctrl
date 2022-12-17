@@ -71,6 +71,15 @@ export default {
       return name
     }
   },
+  updateUserHabits: async (habits: Habit[]): Promise<void> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const docRef = doc(db, "users", userId)
+      await updateDoc(docRef, {
+        habits: habits,
+      })
+    }
+  },
 }
 
 export interface UserData {

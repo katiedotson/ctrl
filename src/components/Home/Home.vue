@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Habits from "./Habits.vue"
 import Time from "./Time.vue"
-import EditHabit from "./EditHabit.vue"
 import Welcome from "./Welcome.vue"
 import Login from "./Login.vue"
 import Modal from "@/components/Modal/Modal.vue"
@@ -13,12 +12,6 @@ import Loading from "@/components/Loading/Loading.vue"
     <Welcome :name="user" />
     <Habits @habits-clicked="habitsTitleClicked" />
     <Time :currentTime="currentTime" />
-    <Modal @close-modal="closeHabitModal" v-if="showHabitModal">
-      <template v-slot:title> Edit Habit </template>
-      <template v-slot:content>
-        <EditHabit :habitProp="currentHabit" />
-      </template>
-    </Modal>
   </section>
   <section v-if="!user">
     <Login />
@@ -53,13 +46,6 @@ export default {
   methods: {
     updateTime() {
       this.currentTime = Date.now()
-    },
-    onOpenHabitModal() {
-      this.showHabitModal = true
-    },
-    closeHabitModal() {
-      const habitsStore = useHabitsStore()
-      habitsStore.showHabitModal("")
     },
     habitsTitleClicked() {
       this.$router.push("/habits")

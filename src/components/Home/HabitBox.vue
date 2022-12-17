@@ -5,12 +5,11 @@
     </div>
     <div class="habit-name" @click="onOpen">
       <div>{{ habitProp.name }}</div>
-      <span>&rarr;</span>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Habit, useHabitsStore } from "@/stores/habits"
+import { Habit } from "@/stores/habits"
 import { AppDay, useCalendarStore } from "@/stores/calendar"
 export default {
   props: {
@@ -30,10 +29,6 @@ export default {
         this.$props.currentDay,
         this.$props.habitProp
       )
-    },
-    onOpen: function () {
-      const habitsStore = useHabitsStore()
-      habitsStore.showHabitModal(this.habitProp.id)
     },
     checkHabitCompleted(): Boolean {
       const calendarStore = useCalendarStore()
@@ -72,29 +67,10 @@ export default {
   background: var(--color-background-highlight);
   color: var(--color-on-highlight);
   position: absolute;
-  bottom: 2px;
   left: 0px;
   padding: 4px;
 }
 .habit-name div {
   display: inline-block;
-}
-.habit-name span {
-  display: none;
-}
-.habit-name:hover {
-  -webkit-animation: glow 1s ease-in-out infinite alternate;
-  -moz-animation: glow 1s ease-in-out infinite alternate;
-  animation: glow 1s ease-in-out infinite alternate;
-  line-height: 2.5rem;
-}
-.habit-name:hover span {
-  line-height: 2.5rem 1s ease-in;
-  font-size: 1.5rem;
-  display: block;
-  float: right;
-  -webkit-animation: glow 1s ease-in-out infinite alternate;
-  -moz-animation: glow 1s ease-in-out infinite alternate;
-  animation: glow 1s ease-in-out infinite alternate;
 }
 </style>

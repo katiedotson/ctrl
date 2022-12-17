@@ -3,12 +3,18 @@ import Modal from "../Modal/Modal.vue"
 import EditHabitDay from "./EditHabitDay.vue"
 import HabitsTable from "./HabitsTable.vue"
 import AddHabit from "./AddHabit.vue"
+import EditHabit from "./EditHabit.vue"
 </script>
 <template>
   <section>
     <h1>Habits</h1>
     <div v-if="habits.length > 0">
-      <habits-table :habits="habits" :days="days" @day-clicked="dayClicked" />
+      <habits-table
+        :habits="habits"
+        :days="days"
+        @day-clicked="dayClicked"
+        @habit-clicked="habitClicked"
+      />
       <h2>Week of: {{ getStartDateFormatted() }}</h2>
       <div class="button-container">
         <button @click="changeWeek(-1)">&larr;</button>
@@ -33,6 +39,13 @@ import AddHabit from "./AddHabit.vue"
       <template v-slot:title> Add a new habit </template>
       <template v-slot:content>
         <AddHabit :newHabitProp="newHabit" @save-new-habit="saveNewHabit" />
+      </template>
+    </Modal>
+    <!-- Edit habit modal -->
+    <Modal @close-modal="closeHabitModal" v-if="editHabit">
+      <template v-slot:title> Edit Habit </template>
+      <template v-slot:content>
+        <EditHabit :habitProp="editHabit" />
       </template>
     </Modal>
   </section>
@@ -73,6 +86,7 @@ export default {
       dateModalDay: undefined as AppDay | undefined,
       startDate: undefined as Date | undefined,
       newHabit: undefined as Habit | undefined,
+      editHabit: undefined as Habit | undefined,
     }
   },
   methods: {
@@ -96,8 +110,15 @@ export default {
       this.newHabit = undefined
     },
     saveNewHabit(newHabit: Habit) {
-      console.log(newHabit)
+      const habitsStore = useHabitsStore()
+      habitsStore.addNewHabit(newHabit)
       this.closeNewHabitModal()
+    },
+    habitClicked(habit: Habit) {
+      this.editHabit = habit
+    },
+    closeHabitModal() {
+      this.editHabit = undefined
     },
   },
 }

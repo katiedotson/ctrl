@@ -1,23 +1,16 @@
 import { defineStore } from "pinia"
+import repository from "@/repository/repository"
 
 export const useHabitsStore = defineStore("habits", {
   state: () => ({
     habits: [] as Habit[],
-    showHabitModal: "" as string,
-    currentHabit: undefined as Habit | undefined,
   }),
   actions: {
     initialize(habits: Habit[]) {
       this.$state.habits = habits
     },
-    showHabitModal(habitId: string) {
-      this.$state.showHabitModal = habitId
-      this.$state.currentHabit = this.$state.habits.find(
-        (it) => it.id == this.$state.showHabitModal
-      )
-    },
     saveHabitUpdates(id: string, name: string, checkIcon: string) {
-      this.$state.habits = this.habits.map((it) => {
+      this.$state.habits = this.$state.habits.map((it) => {
         if (it.id == id) {
           it.checkIcon = checkIcon
           it.name = name
@@ -29,6 +22,18 @@ export const useHabitsStore = defineStore("habits", {
       this.$state.habits = this.$state.habits.filter((it) => {
         return it.id !== id
       })
+    },
+    addNewHabit(habit: Habit) {
+      habit.id = (this.$state.habits.length + 1).toString()
+      this.$state.habits.push(habit)
+      repository
+        .updateUserHabits(this.$state.habits)
+        .then(() => {
+          console.log("success")
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
   },
 })
