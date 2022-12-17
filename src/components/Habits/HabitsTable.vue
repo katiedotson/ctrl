@@ -2,7 +2,7 @@
   <div id="table-scroll" class="table-scroll">
     <table id="main-table">
       <thead>
-        <th scope="col"></th>
+        <th scope="col" id="empty"></th>
         <th
           scope="col"
           v-for="habit in habits"
@@ -18,11 +18,13 @@
             class="date"
             v-html="getFormattedDate(day)"
             @click="dayClicked(day)"
+            v-bind:class="dateIsToday(day)"
           ></th>
           <td
             v-for="habit in habits"
             v-html="getFormattedIcon(habit, day)"
             v-bind:key="habit.id"
+            :class="dateIsToday(day)"
           ></td>
         </tr>
       </tbody>
@@ -60,10 +62,24 @@ export default {
     habitTitleClicked(habit: Habit) {
       this.$emit("habitClicked", habit)
     },
+    dateIsToday(day: AppDay): string {
+      if (
+        DateTime.fromJSDate(day.date).startOf("day").toMillis() ==
+        DateTime.fromJSDate(new Date()).startOf("day").toMillis()
+      )
+        return "today"
+      else return ""
+    },
   },
 }
 </script>
 <style scoped>
+#empty {
+  z-index: 4;
+}
+.today {
+  background: blue;
+}
 .table-scroll {
   max-height: 80vh;
   position: relative;
@@ -89,6 +105,10 @@ export default {
   background: var(--color-background-soft);
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.093);
+}
+.table-scroll th.today,
+.table-scroll td.today {
+  background: rgba(113, 119, 32, 0.093);
 }
 .table-scroll thead th {
   position: -webkit-sticky;
