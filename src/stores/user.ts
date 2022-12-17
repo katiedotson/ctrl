@@ -19,12 +19,10 @@ export const useUserStore = defineStore("user", {
           localRepo.clearAuth()
           this.$state.name = ""
           this.$state.loading = false
-          return
         })
         .catch((err) => {
           this.$state.loading = false
           console.error(err)
-          return
         })
     },
     async loadUserDataFromCache() {
@@ -38,8 +36,7 @@ export const useUserStore = defineStore("user", {
           }
         })
         .catch((error) => {
-          this.$state.loading = false
-          localRepo.clearAuth()
+          this.errorLoadingUser()
           console.error(error)
         })
     },
@@ -56,27 +53,13 @@ export const useUserStore = defineStore("user", {
             this.$state.loading = false
             this.loadExistingUserData(userData)
           } else {
-            repository
-              .addUser({
-                userId: result!!.user.uid,
-                calendar: [],
-                habits: [],
-                name: result!!.user.displayName ?? "",
-              })
-              .then((data: UserData | undefined) => {
-                this.$state.loading = false
-                if (data) {
-                  this.initialize(data)
-                }
-              })
+            this.createUser(result!!.user.uid, result!!.user.displayName)
           }
         })
         .catch((error) => {
-          this.$state.loading = false
+          this.errorLoadingUser()
           console.error(error)
         })
-
-      return undefined
     },
     errorLoadingUser() {
       this.$state.loading = false
@@ -85,19 +68,32 @@ export const useUserStore = defineStore("user", {
       calendarStore.errorLoadingData()
       habitsStore.errorLoadingData()
     },
-    initialize(data: UserData) {
-      const calendarStore = useCalendarStore()
-      const habitsStore = useHabitsStore()
-      calendarStore.initialize()
-      habitsStore.initialize()
-      this.$state.name = data.name
-      this.$state.loading = false
-    },
     loadExistingUserData(user: UserData) {
       const calendarStore = useCalendarStore()
       const habitsStore = useHabitsStore()
       calendarStore.setUserCalendar(user.calendar)
       habitsStore.setUserHabits(user.habits)
+    },
+    createUser(userId: string, userName: string | null) {
+      repository
+        .addUser({
+          userId: userId,
+          calendar: [],
+          habits: [],
+          name: userName ?? "",
+        })
+        .then((data: UserData | undefined) => {
+          this.$state.loading = false
+          if (data) {
+            const calendarStore = useCalendarStore()
+            const habitsStore = useHabitsStore()
+            calendarStore.initialize()
+            habitsStore.initialize()
+            this.$state.name = data.name
+          } else {
+            this.errorLoadingUser()
+          }
+        })
     },
     async updateUserName(name: string): Promise<string | undefined> {
       this.$state.loading = true
