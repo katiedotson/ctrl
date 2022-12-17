@@ -3,14 +3,7 @@
     <div class="modal-content" role="dialog">
       <header class="modal-header" id="modalTitle">
         <slot name="title"></slot>
-        <button
-          type="button"
-          class="close"
-          @click="closeModal"
-          aria-label="Close Modal"
-        >
-          &times;
-        </button>
+        <button type="button" class="close" @click="closeModal" aria-label="Close Modal">&times;</button>
       </header>
       <slot name="content"></slot>
     </div>

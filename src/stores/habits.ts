@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import repository from "@/repository/repository"
+import type { Habit } from "@/types/types"
 
 export const useHabitsStore = defineStore("habits", {
   state: () => ({
@@ -7,7 +8,28 @@ export const useHabitsStore = defineStore("habits", {
     loading: true,
   }),
   actions: {
-    initialize(habits: Habit[]) {
+    initialize() {
+      const habits = this.initialHabits()
+      repository
+        .initializeHabits(habits)
+        .then((_) => {
+          this.setUserHabits(habits)
+        })
+        .catch((err) => {
+          this.loading = false
+          console.error(err)
+        })
+    },
+    initialHabits(): Habit[] {
+      return [
+        {
+          name: "Sleep at least 6 hours",
+          id: "1",
+          checkIcon: "&#128164;",
+        },
+      ]
+    },
+    setUserHabits(habits: Habit[]) {
       this.$state.habits = habits
       this.loading = false
     },
@@ -51,15 +73,3 @@ export const useHabitsStore = defineStore("habits", {
     },
   },
 })
-
-export class Habit {
-  name: string
-  id: string
-  checkIcon: string
-
-  constructor(name: string, id: string, checkIcon: string) {
-    this.name = name
-    this.id = id
-    this.checkIcon = checkIcon
-  }
-}

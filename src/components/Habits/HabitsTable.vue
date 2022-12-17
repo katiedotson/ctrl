@@ -3,38 +3,22 @@
     <table id="main-table">
       <thead>
         <th scope="col" id="empty"></th>
-        <th
-          scope="col"
-          v-for="habit in habits"
-          v-bind:key="habit.id"
-          @click="habitTitleClicked(habit)"
-        >
+        <th scope="col" v-for="habit in habits" v-bind:key="habit.id" @click="habitTitleClicked(habit)">
           {{ habit.name }}
         </th>
       </thead>
       <tbody>
         <tr v-for="day in days" v-bind:key="day.date">
-          <th
-            class="date"
-            v-html="getFormattedDate(day)"
-            @click="dayClicked(day)"
-            v-bind:class="dateIsToday(day)"
-          ></th>
-          <td
-            v-for="habit in habits"
-            v-html="getFormattedIcon(habit, day)"
-            v-bind:key="habit.id"
-            :class="dateIsToday(day)"
-          ></td>
+          <th class="date" v-html="getFormattedDate(day)" @click="dayClicked(day)" v-bind:class="dateIsToday(day)"></th>
+          <td v-for="habit in habits" v-html="getFormattedIcon(habit, day)" v-bind:key="habit.id" :class="dateIsToday(day)"></td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
 <script lang="ts">
-import type { AppDay } from "@/stores/calendar"
-import type { Habit } from "@/stores/habits"
 import { DateTime } from "luxon"
+import type { AppDay, Habit } from "@/types/types"
 export default {
   props: {
     habits: {
@@ -63,11 +47,7 @@ export default {
       this.$emit("habitClicked", habit)
     },
     dateIsToday(day: AppDay): string {
-      if (
-        DateTime.fromJSDate(day.date).startOf("day").toMillis() ==
-        DateTime.fromJSDate(new Date()).startOf("day").toMillis()
-      )
-        return "today"
+      if (DateTime.fromJSDate(day.date).startOf("day").toMillis() == DateTime.fromJSDate(new Date()).startOf("day").toMillis()) return "today"
       else return ""
     },
   },

@@ -9,12 +9,7 @@ import EditHabit from "./EditHabit.vue"
   <section>
     <h1>Habits</h1>
     <div v-if="habits.length > 0">
-      <habits-table
-        :habits="habits"
-        :days="days"
-        @day-clicked="dayClicked"
-        @habit-clicked="habitClicked"
-      />
+      <habits-table :habits="habits" :days="days" @day-clicked="dayClicked" @habit-clicked="habitClicked" />
       <h2>Week of: {{ getStartDateFormatted() }}</h2>
       <div class="button-container">
         <button @click="changeWeek(-1)">&larr;</button>
@@ -51,9 +46,10 @@ import EditHabit from "./EditHabit.vue"
   </section>
 </template>
 <script lang="ts">
-import { Habit, useHabitsStore } from "@/stores/habits"
-import { AppDay, useCalendarStore } from "@/stores/calendar"
+import { useHabitsStore } from "@/stores/habits"
+import { useCalendarStore } from "@/stores/calendar"
 import { DateTime } from "luxon"
+import type { AppDay, Habit } from "@/types/types"
 export default {
   mounted() {
     // habits

@@ -16,9 +16,7 @@ export default {
   },
   computed: {
     formattedDate() {
-      return DateTime.fromMillis(this.$props.currentTime).toLocaleString(
-        DateTime.DATE_FULL
-      )
+      return DateTime.fromMillis(this.$props.currentTime).toLocaleString(DateTime.DATE_FULL)
     },
     formattedTime() {
       return DateTime.fromMillis(this.$props.currentTime).toFormat("hh:mm:ss a")

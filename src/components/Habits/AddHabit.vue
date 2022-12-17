@@ -5,19 +5,14 @@
     <label for="checkIcon">Name</label>
     <input type="text" id="name" name="name" v-model="newHabit.name" />
     <label for="checkIcon">Icon HTML</label>
-    <input
-      type="text"
-      id="checkIcon"
-      name="checkIcon"
-      v-model="newHabit.checkIcon"
-    />
+    <input type="text" id="checkIcon" name="checkIcon" v-model="newHabit.checkIcon" />
     <div class="buttons">
       <button @click="saveNewHabit">Save</button>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Habit } from "@/stores/habits"
+import type { Habit } from "@/types/types"
 export default {
   methods: {
     saveNewHabit() {
@@ -31,7 +26,7 @@ export default {
   },
   props: {
     newHabitProp: {
-      type: Habit,
+      type: Object as () => Habit,
       required: true,
     },
   },

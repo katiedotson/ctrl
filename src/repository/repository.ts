@@ -1,71 +1,57 @@
-import type { AppDay } from "@/stores/calendar"
-import type { Habit } from "@/stores/habits"
+import type { AppDay, DbAppDay, DbUserData, Habit, UserData } from "@/types/types"
 import { initializeApp } from "firebase/app"
-import {
-  getFirestore,
-  setDoc,
-  getDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore"
-import type { FirestoreDataConverter } from "firebase/firestore"
+import { get, getDatabase, push, ref, set, update } from "firebase/database"
 import config from "./config"
 import { localRepo } from "./local"
 
 const firebaseConfig = config
 
 const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
-
-const userDataConverter: FirestoreDataConverter<UserData> = {
-  toFirestore: (userData: UserData): UserData => {
-    return userData
-  },
-  fromFirestore: (snapshot, options): UserData => {
-    const userData = snapshot.data(options)
-    return {
-      userId: userData.userId,
-      name: userData.name,
-      habits: userData.habits,
-      calendar: userData.calendar.map((response: any) => {
-        return {
-          habitsCompleted: response.habitsCompleted,
-          date: response.date.toDate(),
-        }
-      }),
-    }
-  },
-}
+const db = getDatabase(app)
 
 export default {
   addUser: async (user: UserData): Promise<UserData | undefined> => {
-    try {
-      await setDoc(doc(db, "users", user.userId), user)
+    if (user.userId) {
+      await set(ref(db, `users/${user.userId}`), toDbUser(user))
       return user
-    } catch (error) {
-      console.error(error)
+    }
+    return undefined
+  },
+  initializeCalendar: async (initialCal: AppDay[]): Promise<AppDay[] | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      for (const appDay of initialCal) {
+        const retVal = await push(ref(db, `users/${userId}/calendar`))
+        set(retVal, toDbAppDay(appDay))
+      }
+      return initialCal
+    }
+    return undefined
+  },
+  initializeHabits: async (habits: Habit[]): Promise<Habit[] | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      for (const habit of habits) {
+        const retVal = await push(ref(db, `users/${userId}/habits`))
+        set(retVal, habit)
+      }
+      return habits
     }
     return undefined
   },
   loadUserData: async (): Promise<UserData | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {
-      try {
-        const result = await getDoc(
-          doc(db, "users", userId).withConverter(userDataConverter)
-        )
-        return result.data() as UserData
-      } catch (error) {
-        console.error(error)
-      }
+      const snapshot = await get(ref(db, `users/${userId}`))
+      return snapshot.val()
     }
     return undefined
   },
   updateUserName: async (name: string): Promise<string | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {
-      const docRef = doc(db, "users", userId)
-      await updateDoc(docRef, {
+      const docRef = ref(db, `users/${userId}`)
+      await update(docRef, {
         name,
       })
       return name
@@ -74,17 +60,28 @@ export default {
   updateUserHabits: async (habits: Habit[]): Promise<void> => {
     const userId = localRepo.loadUserId()
     if (userId) {
-      const docRef = doc(db, "users", userId)
-      await updateDoc(docRef, {
+      const docRef = ref(db, `users/${userId}`)
+      await update(docRef, {
         habits: habits,
       })
     }
   },
 }
 
-export interface UserData {
-  userId: string
-  calendar: AppDay[]
-  habits: Habit[]
-  name: string
+const toDbUser = (userData: UserData): DbUserData => {
+  return {
+    userId: userData.userId,
+    calendar: userData.calendar.map((appDay) => {
+      return toDbAppDay(appDay)
+    }),
+    habits: userData.habits,
+    name: userData.name,
+  }
+}
+
+const toDbAppDay = (appDay: AppDay): DbAppDay => {
+  return {
+    habitsCompleted: [],
+    date: appDay.date.toUTCString(),
+  }
 }

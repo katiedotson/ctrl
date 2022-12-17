@@ -1,7 +1,7 @@
 import repository from "@/repository/repository"
+import type { AppDay, Habit } from "@/types/types"
 import { DateTime } from "luxon"
 import { defineStore } from "pinia"
-import type { Habit } from "./habits"
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
@@ -12,7 +12,24 @@ export const useCalendarStore = defineStore("calendar", {
     currentDay: {} as AppDay,
   }),
   actions: {
-    initialize(dates: AppDay[]) {
+    initialize() {
+      const initialCalendar = this.initialCalendar()
+      repository.initializeCalendar(initialCalendar).then((_) => {
+        this.setUserCalendar(initialCalendar)
+      })
+    },
+    initialCalendar(): AppDay[] {
+      const calendar: AppDay[] = []
+      const lastMonday = DateTime.fromJSDate(new Date()).startOf("week")
+      for (let index = 0; index < 7; index++) {
+        calendar.push({
+          date: lastMonday.plus({ days: index }).toJSDate(),
+          habitsCompleted: [],
+        })
+      }
+      return calendar
+    },
+    setUserCalendar(dates: AppDay[]) {
       this.$state.allDates = dates
       this.loadCurrentDay()
       this.loadCalendar()
@@ -36,18 +53,13 @@ export const useCalendarStore = defineStore("calendar", {
       this.loading = false
     },
     checkIfDaysAreSame(dateOne: Date, dateTwo: Date): Boolean {
-      return (
-        DateTime.fromJSDate(dateOne).startOf("day").toMillis() ==
-        DateTime.fromJSDate(dateTwo).startOf("day").toMillis()
-      )
+      return DateTime.fromJSDate(dateOne).startOf("day").toMillis() == DateTime.fromJSDate(dateTwo).startOf("day").toMillis()
     },
     toggleHabitForDate(date: AppDay, habit: Habit) {
       this.$state.calendar = this.$state.calendar.map((day) => {
         if (this.checkIfDaysAreSame(date?.date!!, day.date)) {
           if (day.habitsCompleted.some((id) => id == habit.id)) {
-            day.habitsCompleted = day.habitsCompleted.filter(
-              (id) => id != habit.id
-            )
+            day.habitsCompleted = day.habitsCompleted.filter((id) => id != habit.id)
           } else {
             day.habitsCompleted.push(habit.id)
           }
@@ -56,18 +68,13 @@ export const useCalendarStore = defineStore("calendar", {
       })
       if (this.checkIfDaysAreSame(date.date, this.$state.currentDay.date!!)) {
         this.$state.currentDay = this.$state.calendar.find((appDay) => {
-          return this.checkIfDaysAreSame(
-            appDay.date,
-            this.$state.currentDay.date!!
-          )
+          return this.checkIfDaysAreSame(appDay.date, this.$state.currentDay.date!!)
         })!!
       }
     },
     changeStartDate(numOfWeeks: number) {
       this.loading = true
-      this.$state.startDate = DateTime.fromJSDate(this.$state.startDate)
-        .plus({ week: numOfWeeks })
-        .toJSDate()
+      this.$state.startDate = DateTime.fromJSDate(this.$state.startDate).plus({ week: numOfWeeks }).toJSDate()
       this.loadCalendar()
     },
     isHabitCompletedToday(habit: Habit): Boolean {
@@ -83,13 +90,3 @@ export const useCalendarStore = defineStore("calendar", {
     },
   },
 })
-
-export class AppDay {
-  date: Date
-  habitsCompleted: string[]
-
-  constructor(date: Date, habitsCompleted: string[]) {
-    this.date = date
-    this.habitsCompleted = habitsCompleted
-  }
-}

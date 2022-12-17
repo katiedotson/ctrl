@@ -5,21 +5,15 @@ import HabitBox from "./HabitBox.vue"
   <div id="habits-box">
     <h2 @click="habitsClicked">Habits<span>&rarr;</span></h2>
     <div v-if="habits != undefined && habits.length != 0" id="habits-container">
-      <HabitBox
-        v-for="habit in habits"
-        :habitProp="habit"
-        :currentDay="currentDay"
-        v-bind:key="habit.id"
-      />
+      <HabitBox v-for="habit in habits" :habitProp="habit" :currentDay="currentDay" v-bind:key="habit.id" />
     </div>
-    <div v-if="habits == undefined || habits.length == 0">
-      Nothing here yet.
-    </div>
+    <div v-if="habits == undefined || habits.length == 0">Nothing here yet.</div>
   </div>
 </template>
 <script lang="ts">
-import { useHabitsStore, Habit } from "@/stores/habits"
-import { useCalendarStore, AppDay } from "@/stores/calendar"
+import { useHabitsStore } from "@/stores/habits"
+import { useCalendarStore } from "@/stores/calendar"
+import type { AppDay, Habit } from "@/types/types"
 export default {
   data() {
     return {

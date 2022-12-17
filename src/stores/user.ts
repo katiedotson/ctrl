@@ -1,16 +1,10 @@
-import type { UserData } from "@/repository/repository"
 import { defineStore } from "pinia"
 import repository from "@/repository/repository"
-import {
-  getAuth,
-  signOut,
-  type OAuthCredential,
-  type UserCredential,
-} from "firebase/auth"
+import { getAuth, signOut, type OAuthCredential, type UserCredential } from "firebase/auth"
 import { localRepo } from "@/repository/local"
-import { AppDay, useCalendarStore } from "./calendar"
-import { Habit, useHabitsStore } from "./habits"
-import { DateTime } from "luxon"
+import { useCalendarStore } from "./calendar"
+import { useHabitsStore } from "./habits"
+import type { UserData } from "@/types/types"
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -40,18 +34,16 @@ export const useUserStore = defineStore("user", {
         .then((userData: UserData | undefined) => {
           this.$state.loading = false
           if (userData) {
-            this.initialize(userData)
+            this.loadExistingUserData(userData)
           }
         })
         .catch((error) => {
           this.$state.loading = false
+          localRepo.clearAuth()
           console.error(error)
         })
     },
-    async loadUserData(
-      credential: OAuthCredential,
-      result: UserCredential | null
-    ) {
+    async loadUserData(credential: OAuthCredential, result: UserCredential | null) {
       this.$state.loading = true
       const token = credential.accessToken
       localRepo.saveAuthToken(token!!)
@@ -62,13 +54,13 @@ export const useUserStore = defineStore("user", {
         .then((userData: UserData | undefined) => {
           if (userData) {
             this.$state.loading = false
-            this.initialize(userData)
+            this.loadExistingUserData(userData)
           } else {
             repository
               .addUser({
                 userId: result!!.user.uid,
-                calendar: this.initialCalendar(),
-                habits: this.initialHabit(),
+                calendar: [],
+                habits: [],
                 name: result!!.user.displayName ?? "",
               })
               .then((data: UserData | undefined) => {
@@ -93,33 +85,19 @@ export const useUserStore = defineStore("user", {
       calendarStore.errorLoadingData()
       habitsStore.errorLoadingData()
     },
-    initialCalendar(): AppDay[] {
-      const calendar: AppDay[] = []
-      const lastMonday = DateTime.fromJSDate(new Date()).startOf("week")
-      for (let index = 0; index < 7; index++) {
-        calendar.push({
-          date: lastMonday.plus({ days: index }).toJSDate(),
-          habitsCompleted: [],
-        })
-      }
-      return calendar
-    },
-    initialHabit(): Habit[] {
-      return [
-        {
-          name: "Sleep at least 6 hours",
-          id: "1",
-          checkIcon: "&#128164;",
-        },
-      ]
-    },
     initialize(data: UserData) {
       const calendarStore = useCalendarStore()
       const habitsStore = useHabitsStore()
-      calendarStore.initialize(data!!.calendar)
-      habitsStore.initialize(data!!.habits)
+      calendarStore.initialize()
+      habitsStore.initialize()
       this.$state.name = data.name
       this.$state.loading = false
+    },
+    loadExistingUserData(user: UserData) {
+      const calendarStore = useCalendarStore()
+      const habitsStore = useHabitsStore()
+      calendarStore.setUserCalendar(user.calendar)
+      habitsStore.setUserHabits(user.habits)
     },
     async updateUserName(name: string): Promise<string | undefined> {
       this.$state.loading = true

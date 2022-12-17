@@ -13,11 +13,12 @@
   </section>
 </template>
 <script lang="ts">
-import { useHabitsStore, Habit } from "@/stores/habits"
+import { useHabitsStore } from "@/stores/habits"
+import type { Habit } from "@/types/types"
 export default {
   props: {
     habitProp: {
-      type: Habit,
+      type: Object as () => Habit,
       required: true,
     },
   },

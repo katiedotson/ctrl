@@ -2,8 +2,6 @@
   <div>Welcome, {{ name }}</div>
 </template>
 <script lang="ts">
-import { useUserStore } from "@/stores/user"
-
 export default {
   props: {
     name: {

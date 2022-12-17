@@ -9,26 +9,23 @@
   </div>
 </template>
 <script lang="ts">
-import { Habit } from "@/stores/habits"
-import { AppDay, useCalendarStore } from "@/stores/calendar"
+import { useCalendarStore } from "@/stores/calendar"
+import type { AppDay, Habit } from "@/types/types"
 export default {
   props: {
     habitProp: {
-      type: Habit,
+      type: Object as () => Habit,
       required: true,
     },
     currentDay: {
-      type: AppDay,
+      type: Object as () => AppDay,
       required: true,
     },
   },
   methods: {
     onClick: function () {
       const calendarStore = useCalendarStore()
-      calendarStore.toggleHabitForDate(
-        this.$props.currentDay,
-        this.$props.habitProp
-      )
+      calendarStore.toggleHabitForDate(this.$props.currentDay, this.$props.habitProp)
     },
     checkHabitCompleted(): Boolean {
       const calendarStore = useCalendarStore()

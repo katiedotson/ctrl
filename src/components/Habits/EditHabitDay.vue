@@ -5,19 +5,15 @@
     <div class="edit-day-habit" v-for="habit in habits" v-bind:key="habit.id">
       <label class="container">
         <p>{{ habit.name }}</p>
-        <input
-          type="checkbox"
-          :checked="showHabitCheckForDate(habit)"
-          @change="checkboxChange(habit)"
-        />
+        <input type="checkbox" :checked="showHabitCheckForDate(habit)" @change="checkboxChange(habit)" />
         <span class="checkmark"></span>
       </label>
     </div>
   </section>
 </template>
 <script lang="ts">
-import type { Habit } from "@/stores/habits"
-import { AppDay, useCalendarStore } from "@/stores/calendar"
+import type { Habit, AppDay } from "@/types/types"
+import { useCalendarStore } from "@/stores/calendar"
 import { DateTime } from "luxon"
 export default {
   props: {
@@ -26,17 +22,13 @@ export default {
       required: true,
     },
     day: {
-      type: AppDay,
+      type: Object as () => AppDay,
       required: true,
     },
   },
   methods: {
     showHabitCheckForDate(habit: Habit): Boolean {
-      return (
-        this.$props.day.habitsCompleted.some(
-          (habitId: string) => habitId == habit.id
-        ) ?? false
-      )
+      return this.$props.day.habitsCompleted.some((habitId: string) => habitId == habit.id) ?? false
     },
     checkboxChange(habit: Habit) {
       const calendarStore = useCalendarStore()
