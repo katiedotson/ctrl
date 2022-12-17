@@ -19,18 +19,10 @@ import Loading from "@/components/Loading/Loading.vue"
 </template>
 
 <script lang="ts">
-import { useHabitsStore, Habit } from "@/stores/habits"
 import { useUserStore } from "@/stores/user"
 
 export default {
   mounted() {
-    // listen to habit click
-    const habitsStore = useHabitsStore()
-    habitsStore.$subscribe((_, state) => {
-      this.showHabitModal = state.showHabitModal !== ""
-      this.currentHabit = state.currentHabit as Habit
-    })
-
     // time
     setInterval(() => {
       this.updateTime()
@@ -54,13 +46,6 @@ export default {
   data() {
     return {
       currentTime: Date.now(),
-      showHabitModal: false,
-      currentHabit: {
-        name: "Food",
-        isChecked: false,
-        id: "0",
-        checkIcon: "&#9889;",
-      } as Habit,
       user: "" as string,
     }
   },
