@@ -50,12 +50,17 @@ export const useHabitsStore = defineStore("habits", {
       this.updateToRepo()
     },
     addNewHabit(habit: Habit) {
-      const lastHabitId = this.$state.habits.sort((a: Habit, b: Habit) => {
-        return Number(a.id) - Number(b.id)
-      })[this.$state.habits.length - 1].id
-      habit.id = (Number(lastHabitId) + 1).toString()
-      this.$state.habits.push(habit)
-      this.updateToRepo()
+      this.loading = true
+      repository
+        .addHabit(habit)
+        .then((res) => {
+          this.$state.habits.push(res as Habit)
+          this.loading = false
+        })
+        .catch((err) => {
+          this.loading = false
+          console.log(err)
+        })
     },
     updateToRepo() {
       repository

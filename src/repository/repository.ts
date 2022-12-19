@@ -24,6 +24,7 @@ export default {
     if (userId) {
       for (const appDay of initialCal) {
         const retVal = await push(ref(db, `users/${userId}/calendar`))
+        appDay.id = retVal.key!!
         set(retVal, mappers.toDbAppDay(appDay))
       }
       return initialCal
@@ -36,6 +37,7 @@ export default {
     if (userId) {
       for (const habit of habits) {
         const retVal = await push(ref(db, `users/${userId}/habits`))
+        habit.id = retVal.key!!
         set(retVal, habit)
       }
       return habits
@@ -63,6 +65,17 @@ export default {
         name,
       })
       return name
+    }
+    return undefined
+  },
+
+  addHabit: async (habit: Habit): Promise<Habit | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const retVal = await push(ref(db, `users/${userId}/habits`))
+      habit.id = retVal.key!!
+      set(retVal, habit)
+      return habit
     }
     return undefined
   },
