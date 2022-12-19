@@ -65,7 +65,7 @@ export const useHabitsStore = defineStore("habits", {
         })
         .catch((err) => {
           this.loading = false
-          console.log(err)
+          console.error(err)
         })
     },
     errorLoadingData() {

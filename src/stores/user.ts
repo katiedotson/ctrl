@@ -51,7 +51,6 @@ export const useUserStore = defineStore("user", {
       repository
         .loadUserData()
         .then((userData: UserData | undefined) => {
-          console.log("USER_DATA", userData)
           if (userData) {
             this.$state.loading = false
             this.loadExistingUserData(userData)
@@ -72,7 +71,6 @@ export const useUserStore = defineStore("user", {
       habitsStore.errorLoadingData()
     },
     loadExistingUserData(user: UserData) {
-      console.log("existing user after parsed: ", user)
       this.$state.name = user.name
       const calendarStore = useCalendarStore()
       const habitsStore = useHabitsStore()

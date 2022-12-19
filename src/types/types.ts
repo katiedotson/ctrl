@@ -28,3 +28,7 @@ export interface DbAppDay {
   date: string
   habitsCompleted: string[]
 }
+
+export interface Id {
+  id: string
+}
