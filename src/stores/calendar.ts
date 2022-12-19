@@ -75,14 +75,10 @@ export const useCalendarStore = defineStore("calendar", {
         dayFromState.habitsCompleted.push(habit.id)
       }
 
-      console.log("dayFromState", dayFromState)
-
       repository
         .updateUserCalendar(dayFromState)
         .then((res) => {
           if (res) {
-            console.log(res)
-            console.log("success")
             // update calendar in state
             this.$state.calendar = this.$state.calendar.map((day) => {
               if (this.checkIfDaysAreSame(date?.date!!, day.date)) {
