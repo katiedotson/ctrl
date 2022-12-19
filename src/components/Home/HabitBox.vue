@@ -3,7 +3,7 @@
     <div class="check-wrapper" @click="onClick">
       <div class="check" v-html="getHtmlForHabit()"></div>
     </div>
-    <div class="habit-name" @click="onOpen">
+    <div class="habit-name">
       <div>{{ habitProp.name }}</div>
     </div>
   </div>
