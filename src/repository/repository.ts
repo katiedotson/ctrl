@@ -43,7 +43,10 @@ export default {
     const userId = localRepo.loadUserId()
     if (userId) {
       const snapshot = await get(ref(db, `users/${userId}`))
-      return snapshot.val()
+      const value = snapshot.val()
+      if (value) {
+        return fromDatabaseResponse(value)
+      }
     }
     return undefined
   },
@@ -84,4 +87,29 @@ const toDbAppDay = (appDay: AppDay): DbAppDay => {
     habitsCompleted: [],
     date: appDay.date.toUTCString(),
   }
+}
+const fromDatabaseResponse = (userResponse: any): UserData => {
+  console.log("db response: ", userResponse)
+  const userData = {
+    name: userResponse.name,
+    userId: userResponse.userId,
+    calendar: flattenToArray<AppDay>(userResponse.calendar),
+    habits: flattenToArray<Habit>(userResponse.habits),
+  }
+  console.log("userData from response,", userData)
+  return userData
+}
+
+interface Id {
+  id: string
+}
+
+function flattenToArray<T extends Id>(objectIn: any): T[] {
+  var arrayOut: T[] = []
+  for (const key in objectIn) {
+    const obj = objectIn[key]
+    obj.id = key
+    arrayOut.push(obj)
+  }
+  return arrayOut
 }

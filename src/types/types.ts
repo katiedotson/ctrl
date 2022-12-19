@@ -6,6 +6,7 @@ export interface UserData {
 }
 
 export interface AppDay {
+  id: string
   date: Date
   habitsCompleted: string[]
 }

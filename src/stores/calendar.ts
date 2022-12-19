@@ -25,20 +25,23 @@ export const useCalendarStore = defineStore("calendar", {
         calendar.push({
           date: lastMonday.plus({ days: index }).toJSDate(),
           habitsCompleted: [],
+          id: "",
         })
       }
       return calendar
     },
     setUserCalendar(dates: AppDay[]) {
+      console.log("setting user calendar")
       this.$state.allDates = dates
       this.loadCurrentDay()
       this.loadCalendar()
     },
     loadCurrentDay() {
-      const todayAppDay = this.$state.allDates.find((day) => {
+      const today = this.$state.allDates.find((day) => {
         return this.checkIfDaysAreSame(new Date(), day.date)
       })!!
-      this.$state.currentDay = todayAppDay
+      this.$state.currentDay = today
+      console.log(this.$state)
     },
     loadCalendar() {
       const startDay = DateTime.fromJSDate(this.$state.startDate)
@@ -53,7 +56,9 @@ export const useCalendarStore = defineStore("calendar", {
       this.loading = false
     },
     checkIfDaysAreSame(dateOne: Date, dateTwo: Date): Boolean {
-      return DateTime.fromJSDate(dateOne).startOf("day").toMillis() == DateTime.fromJSDate(dateTwo).startOf("day").toMillis()
+      const daysAreTheSame = DateTime.fromJSDate(dateOne).startOf("day").toMillis() == DateTime.fromJSDate(dateTwo).startOf("day").toMillis()
+      console.log("days are the same", daysAreTheSame)
+      return daysAreTheSame
     },
     toggleHabitForDate(date: AppDay, habit: Habit) {
       this.$state.calendar = this.$state.calendar.map((day) => {
@@ -78,6 +83,7 @@ export const useCalendarStore = defineStore("calendar", {
       this.loadCalendar()
     },
     isHabitCompletedToday(habit: Habit): Boolean {
+      console.log("checking for completed habits", this.$state)
       const matchingDay = this.$state.allDates.find((appDay) => {
         return this.checkIfDaysAreSame(appDay.date, this.$state.currentDay.date)
       })!!
