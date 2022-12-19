@@ -77,4 +77,15 @@ export default {
     }
     return undefined
   },
+
+  updateUserCalendar: async (date: AppDay): Promise<AppDay | undefined> => {
+    console.log("updating day: ", date)
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const val = await ref(db, `users/${userId}/calendar/${date.id}`)
+      set(val, mappers.toDbAppDay(date))
+      return date
+    }
+    return undefined
+  },
 }
