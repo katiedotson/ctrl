@@ -8,7 +8,7 @@
         </th>
       </thead>
       <tbody>
-        <tr v-for="day in days" v-bind:key="day.date">
+        <tr v-for="day in days" v-bind:key="day.date.getUTCMilliseconds">
           <th class="date" v-html="getFormattedDate(day)" @click="dayClicked(day)" v-bind:class="dateIsToday(day)"></th>
           <td v-for="habit in habits" v-html="getFormattedIcon(habit, day)" v-bind:key="habit.id" :class="dateIsToday(day)"></td>
         </tr>

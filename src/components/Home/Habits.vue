@@ -68,6 +68,6 @@ h2:hover span {
   margin: 8px 0;
   display: grid;
   grid-gap: 8px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 </style>
