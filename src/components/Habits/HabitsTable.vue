@@ -88,7 +88,8 @@ export default {
 }
 .table-scroll th.today,
 .table-scroll td.today {
-  background: rgba(113, 119, 32, 0.093);
+  background: rgb(159, 169, 20);
+  color: black;
 }
 .table-scroll thead th {
   position: -webkit-sticky;

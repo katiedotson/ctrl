@@ -8,6 +8,9 @@ import EditHabit from "./EditHabit.vue"
 <template>
   <section>
     <h1>Habits</h1>
+    <div class="buttons">
+      <button @click="addNewHabit">Add a habit</button>
+    </div>
     <div v-if="habits.length > 0">
       <habits-table :habits="habits" :days="days" @day-clicked="dayClicked" @habit-clicked="habitClicked" />
       <h2>Week of: {{ getStartDateFormatted() }}</h2>
@@ -18,9 +21,6 @@ import EditHabit from "./EditHabit.vue"
     </div>
     <div v-else>
       <h4>Nothing here yet.</h4>
-    </div>
-    <div class="buttons">
-      <button @click="addNewHabit">Add a habit</button>
     </div>
     <!-- Edit day modal -->
     <Modal v-if="dateModalDay" @close-modal="closeDateModal">
@@ -100,7 +100,7 @@ export default {
       this.dateModalDay = day
     },
     addNewHabit() {
-      this.newHabit = { name: "", id: "", checkIcon: "" }
+      this.newHabit = { name: "", id: "", checkIcon: "✅" }
     },
     closeNewHabitModal() {
       this.newHabit = undefined
@@ -142,9 +142,6 @@ export default {
 }
 .button-container button:last-child {
   float: right;
-}
-.buttons {
-  margin: 20px auto;
 }
 .buttons :last-child {
   margin-left: 0;
