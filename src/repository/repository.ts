@@ -100,4 +100,17 @@ export default {
     }
     return undefined
   },
+
+  loadAdditionalDays: async (daysToAdd: AppDay[]): Promise<AppDay[] | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      for (const appDay of daysToAdd) {
+        const retVal = await push(ref(db, `users/${userId}/calendar`))
+        appDay.id = retVal.key!!
+        set(retVal, mappers.toDbAppDay(appDay))
+      }
+      return daysToAdd
+    }
+    return undefined
+  },
 }
