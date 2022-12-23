@@ -5,11 +5,12 @@
         <th scope="col" id="empty"></th>
         <th scope="col" v-for="habit in habits" v-bind:key="habit.id" @click="habitTitleClicked(habit)">
           {{ habit.name }}
+          <span class="material-icons"> edit </span>
         </th>
       </thead>
       <tbody>
         <tr v-for="day in days" v-bind:key="day.date.getUTCMilliseconds">
-          <th class="date" v-html="getFormattedDate(day)" @click="dayClicked(day)" v-bind:class="dateIsToday(day)"></th>
+          <th @click="dayClicked(day)" v-bind:class="dateIsToday(day)">{{ getFormattedDate(day) }} <span class="material-icons"> edit </span></th>
           <td v-for="habit in habits" v-html="getFormattedIcon(habit, day)" v-bind:key="habit.id" :class="dateIsToday(day)"></td>
         </tr>
       </tbody>
@@ -85,6 +86,13 @@ export default {
   background: var(--color-background-soft);
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.093);
+  line-height: 1em;
+}
+.table-scroll th span,
+.table-scroll td span {
+  font-size: 1em;
+  margin-left: 8px;
+  vertical-align: middle;
 }
 .table-scroll th.today,
 .table-scroll td.today {
