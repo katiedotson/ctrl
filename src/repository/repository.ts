@@ -113,4 +113,18 @@ export default {
     }
     return undefined
   },
+
+  getUserDays: async (): Promise<AppDay[] | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const snapshot = await get(ref(db, `users/${userId}/calendar`))
+      const value = snapshot.val()
+      if (value) {
+        const userDaysIncomplete = mappers.flattenToArray<AppDay>(value)
+        const userDays = mappers.completeCalendarMapping(userDaysIncomplete)
+        return userDays
+      }
+    }
+    return undefined
+  },
 }

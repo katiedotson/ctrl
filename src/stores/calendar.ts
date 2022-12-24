@@ -14,7 +14,7 @@ export const useCalendarStore = defineStore("calendar", {
   }),
   actions: {
     initialize() {
-      const initialCalendar = this.createAppDaysForDateRange(this.$state.startDate, this.$state.endDate)
+      const initialCalendar = this.createAppDaysForDateRange(this.startDate, this.endDate)
       repository.initializeCalendar(initialCalendar).then((_) => {
         this.setUserCalendar(initialCalendar)
       })
@@ -36,30 +36,46 @@ export const useCalendarStore = defineStore("calendar", {
       return calendar
     },
 
-    setUserCalendar(dates: AppDay[]) {
-      this.$state.allDays = dates
-      this.$state.allDays.sort((dayA, dayB) => {
-        return Number(dayA.date.getMilliseconds) - Number(dayB.date.getMilliseconds)
+    createAppDaysForMissingDays(missingDays: Date[]): AppDay[] {
+      const calendar: AppDay[] = []
+      missingDays.forEach((day) => {
+        calendar.push({
+          date: day,
+          habitsCompleted: [],
+          id: "",
+        })
       })
+      return calendar
+    },
+
+    setUserCalendar(dates: AppDay[]) {
+      this.allDays = dates
+      this.sortDays()
       this.loadCurrentDay()
       this.loadCalendar()
     },
 
+    sortDays() {
+      this.allDays = this.allDays.sort((dayA, dayB) => {
+        return Number(dayA.date - dayB.date)
+      })
+    },
+
     loadCurrentDay() {
-      const today = this.$state.allDays.find((day) => {
+      const today = this.allDays.find((day) => {
         return this.checkIfDaysAreSame(new Date(), day.date)
       })!!
-      this.$state.currentDay = today
+      this.currentDay = today
     },
 
     loadCalendar() {
-      const startDay = DateTime.fromJSDate(this.$state.startDate)
-      const endDay = DateTime.fromJSDate(this.$state.endDate)
-      const result = this.$state.allDays.filter((appDay) => {
+      const startDay = DateTime.fromJSDate(this.startDate)
+      const endDay = DateTime.fromJSDate(this.endDate)
+      const result = this.allDays.filter((appDay) => {
         const thisDay = DateTime.fromJSDate(appDay.date)
         return thisDay >= startDay && thisDay < endDay
       })
-      this.$state.calendar = result
+      this.calendar = result
       this.loading = false
     },
 
@@ -84,7 +100,7 @@ export const useCalendarStore = defineStore("calendar", {
         .then((res) => {
           if (res) {
             // update day in state
-            this.$state.allDays = this.$state.allDays.map((day) => {
+            this.allDays = this.allDays.map((day) => {
               if (this.checkIfDaysAreSame(date?.date!!, day.date)) {
                 day = date
               }
@@ -92,8 +108,8 @@ export const useCalendarStore = defineStore("calendar", {
             })
 
             // update today in state if the updated day was today
-            if (this.checkIfDaysAreSame(date.date, this.$state.currentDay.date!!)) {
-              this.$state.currentDay = date
+            if (this.checkIfDaysAreSame(date.date, this.currentDay.date!!)) {
+              this.currentDay = date
             }
 
             // reset calendar
@@ -111,39 +127,60 @@ export const useCalendarStore = defineStore("calendar", {
     changeDateRange(startDate: Date, endDate: Date) {
       this.loading = true
 
-      this.$state.startDate = startDate
-      this.$state.endDate = endDate
+      this.startDate = DateTime.fromJSDate(startDate).startOf("day").toJSDate()
+      this.endDate = DateTime.fromJSDate(endDate).startOf("day").toJSDate()
 
-      const requestedInterval = Interval.fromDateTimes(startDate, endDate)
-      const loadedInterval = Interval.fromDateTimes(this.allDays[0].date, this.allDays[this.allDays.length - 1].date)
+      const loadedDays = this.allDays.map((it) => {
+        return it.date
+      })
+      const requestedDaysInterval = Interval.fromDateTimes(this.startDate, this.endDate)
+      var requestedDays = [] as Date[]
+      requestedDaysInterval.splitBy({ day: 1 }).forEach((it) => {
+        requestedDays.push(it.start.toJSDate())
+      })
+      requestedDays.push(requestedDaysInterval.end.toJSDate())
 
-      const missingDays = requestedInterval.splitBy({ days: 1 }).filter((date) => {
-        return !loadedInterval.contains(date.start.startOf("day"))
+      const missingDays = requestedDays.filter((date) => {
+        return !loadedDays.some((day) => {
+          return this.checkIfDaysAreSame(date, day)
+        })
       })
 
       if (missingDays.length > 0) {
-        const firstMissingDay = missingDays[0].start.toJSDate()
-        const lastMissingDay = missingDays[missingDays.length - 1].end.toJSDate()
-        const missingDaysCreated = this.createAppDaysForDateRange(firstMissingDay, lastMissingDay)
+        const missingDaysCreated = this.createAppDaysForMissingDays(missingDays)
 
         repository
           .loadAdditionalDays(missingDaysCreated)
           .then((daysAdded) => {
             if (daysAdded) {
-              this.setUserCalendar(daysAdded)
+              // get user days
+              repository
+                .getUserDays()
+                .then((allUserDays: AppDay[] | undefined) => {
+                  if (allUserDays) {
+                    this.setUserCalendar(allUserDays)
+                  } else {
+                    throw Error("Unable to load user days")
+                  }
+                })
+                .catch((err) => {
+                  throw err
+                })
             }
           })
-          .catch((err) => console.error(err))
+          .catch((err) => {
+            this.loading = false
+            console.error(err)
+          })
       } else {
-        this.startDate = startDate
-        this.endDate = endDate
+        this.sortDays()
         this.loadCalendar()
       }
     },
 
     isHabitCompletedToday(habit: Habit): Boolean {
-      const matchingDay = this.$state.allDays.find((appDay) => {
-        return this.checkIfDaysAreSame(appDay.date, this.$state.currentDay.date)
+      const matchingDay = this.allDays.find((appDay) => {
+        return this.checkIfDaysAreSame(appDay.date, this.currentDay.date)
       })!!
       return matchingDay.habitsCompleted.some((habitId) => {
         return habitId == habit.id
@@ -151,7 +188,7 @@ export const useCalendarStore = defineStore("calendar", {
     },
 
     errorLoadingData() {
-      this.$state.loading = false
+      this.loading = false
     },
   },
 })
