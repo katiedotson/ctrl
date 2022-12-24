@@ -4,6 +4,7 @@ import EditHabitDay from "./EditHabitDay.vue"
 import HabitsTable from "./HabitsTable.vue"
 import AddHabit from "./AddHabit.vue"
 import EditHabit from "./EditHabit.vue"
+import Datepicker from "@vuepic/vue-datepicker"
 </script>
 <template>
   <section>
@@ -13,11 +14,7 @@ import EditHabit from "./EditHabit.vue"
     </div>
     <div v-if="habits.length > 0">
       <habits-table :habits="habits" :days="days" @day-clicked="dayClicked" @habit-clicked="habitClicked" />
-      <h2>Week of: {{ getStartDateFormatted() }}</h2>
-      <div class="button-container">
-        <button @click="changeWeek(-1)">&larr;</button>
-        <button @click="changeWeek(1)">&rarr;</button>
-      </div>
+      <Datepicker v-model="date" @update:modelValue="handleDateChange" range dark />
     </div>
     <div v-else>
       <h4>Nothing here yet.</h4>
@@ -48,8 +45,8 @@ import EditHabit from "./EditHabit.vue"
 <script lang="ts">
 import { useHabitsStore } from "@/stores/habits"
 import { useCalendarStore } from "@/stores/calendar"
-import { DateTime } from "luxon"
 import type { AppDay, Habit } from "@/types/types"
+import "@vuepic/vue-datepicker/dist/main.css"
 export default {
   mounted() {
     // habits
@@ -70,9 +67,10 @@ export default {
     )
 
     // start date
-    this.startDate = calendarStore.startDate
+    this.date.push(calendarStore.startDate)
+    this.date.push(calendarStore.endDate)
     calendarStore.$subscribe((_, state) => {
-      this.startDate = state.startDate
+      this.date = [state.startDate, state.endDate]
     })
   },
   data() {
@@ -80,21 +78,18 @@ export default {
       habits: [] as Habit[],
       days: [] as AppDay[],
       dateModalDay: undefined as AppDay | undefined,
-      startDate: undefined as Date | undefined,
+      date: [] as Date[],
       newHabit: undefined as Habit | undefined,
       editHabit: undefined as Habit | undefined,
     }
   },
   methods: {
+    handleDateChange(dates: any) {
+      const calendarStore = useCalendarStore()
+      calendarStore.changeDateRange(dates[0] as Date, dates[1] as Date)
+    },
     closeDateModal() {
       this.dateModalDay = undefined
-    },
-    getStartDateFormatted(): string {
-      return DateTime.fromJSDate(this.startDate!!).toFormat("DDDD")
-    },
-    changeWeek(increment: number) {
-      const calendarStore = useCalendarStore()
-      calendarStore.changeStartDate(increment)
     },
     dayClicked(day: AppDay) {
       this.dateModalDay = day
@@ -127,23 +122,5 @@ export default {
   -webkit-animation: glow 1s ease-in-out infinite alternate;
   -moz-animation: glow 1s ease-in-out infinite alternate;
   animation: glow 1s ease-in-out infinite alternate;
-}
-.button-container button {
-  background: none;
-  color: var(--color-text);
-  border: none;
-  cursor: pointer;
-  font-size: 3rem;
-}
-.button-container button:hover {
-  -webkit-animation: glow 1s ease-in-out infinite alternate;
-  -moz-animation: glow 1s ease-in-out infinite alternate;
-  animation: glow 1s ease-in-out infinite alternate;
-}
-.button-container button:last-child {
-  float: right;
-}
-.buttons :last-child {
-  margin-left: 0;
 }
 </style>
