@@ -1,10 +1,10 @@
-import type { AppDay, DbAppDay, DbUserData, Habit, Id, UserData } from "@/types/types"
+import type { HabitDay, DbHabitDay, DbUserData, Habit, Id, UserData } from "@/types/types"
 
 export default {
-  toDbAppDay(appDay: AppDay): DbAppDay {
+  toDbHabitDay(habitDay: HabitDay): DbHabitDay {
     return {
-      habitsCompleted: appDay.habitsCompleted,
-      date: appDay.date.toUTCString(),
+      habitsCompleted: habitDay.habitsCompleted,
+      date: habitDay.date.toUTCString(),
     }
   },
 
@@ -12,22 +12,22 @@ export default {
     const userData = {
       name: userResponse.name,
       userId: userResponse.userId,
-      calendar: this.flattenToArray<AppDay>(userResponse.calendar),
+      habitCalendar: this.flattenToArray<HabitDay>(userResponse.calendar),
       habits: this.flattenToArray<Habit>(userResponse.habits),
     }
-    if (userData.calendar) {
-      userData.calendar = this.completeCalendarMapping(userData.calendar)
+    if (userData.habitCalendar) {
+      userData.habitCalendar = this.completeHabitCalendarMapping(userData.habitCalendar)
     }
     return userData
   },
 
-  completeCalendarMapping(calendar: AppDay[]): AppDay[] {
-    calendar.map((appDay) => {
-      if (appDay && appDay.habitsCompleted == undefined) {
-        appDay.habitsCompleted = []
+  completeHabitCalendarMapping(calendar: HabitDay[]): HabitDay[] {
+    calendar.map((habitDay) => {
+      if (habitDay && habitDay.habitsCompleted == undefined) {
+        habitDay.habitsCompleted = []
       }
-      if (appDay) {
-        appDay.date = new Date(appDay.date)
+      if (habitDay) {
+        habitDay.date = new Date(habitDay.date)
       }
     })
     return calendar
@@ -36,8 +36,8 @@ export default {
   toDbUser(userData: UserData): DbUserData {
     return {
       userId: userData.userId,
-      calendar: userData.calendar.map((appDay) => {
-        return this.toDbAppDay(appDay)
+      habitCalendar: userData.habitCalendar.map((habitDay) => {
+        return this.toDbHabitDay(habitDay)
       }),
       habits: userData.habits,
       name: userData.name,

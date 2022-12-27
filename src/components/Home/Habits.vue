@@ -12,13 +12,13 @@ import HabitBox from "./HabitBox.vue"
 </template>
 <script lang="ts">
 import { useHabitsStore } from "@/stores/habits"
-import { useCalendarStore } from "@/stores/calendar"
-import type { AppDay, Habit } from "@/types/types"
+import { useHabitCalendarStore } from "@/stores/habit-calendar"
+import type { HabitDay, Habit } from "@/types/types"
 export default {
   data() {
     return {
       habits: [] as Habit[],
-      currentDay: {} as AppDay,
+      currentDay: {} as HabitDay,
     }
   },
   mounted() {
@@ -30,7 +30,7 @@ export default {
     })
 
     // calendar and today
-    const calendarStore = useCalendarStore()
+    const calendarStore = useHabitCalendarStore()
     this.currentDay = calendarStore.currentDay
     calendarStore.$subscribe((_, state) => {
       this.currentDay = state.currentDay

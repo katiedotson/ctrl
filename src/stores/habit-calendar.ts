@@ -1,27 +1,27 @@
 import repository from "@/repository/repository"
-import type { AppDay, Habit } from "@/types/types"
+import type { HabitDay, Habit } from "@/types/types"
 import { DateTime, Interval } from "luxon"
 import { defineStore } from "pinia"
 
-export const useCalendarStore = defineStore("calendar", {
+export const useHabitCalendarStore = defineStore("calendar", {
   state: () => ({
     loading: true,
-    allDays: [] as AppDay[],
-    calendar: [] as AppDay[],
+    allDays: [] as HabitDay[],
+    calendar: [] as HabitDay[],
     startDate: DateTime.fromJSDate(new Date()).startOf("week").toJSDate(),
     endDate: DateTime.fromJSDate(new Date()).startOf("week").plus({ weeks: 1 }).toJSDate(),
-    currentDay: {} as AppDay,
+    currentDay: {} as HabitDay,
   }),
   actions: {
     initialize() {
-      const initialCalendar = this.createAppDaysForDateRange(this.startDate, this.endDate)
+      const initialCalendar = this.createHabitDaysForDateRange(this.startDate, this.endDate)
       repository.initializeCalendar(initialCalendar).then((_) => {
         this.setUserCalendar(initialCalendar)
       })
     },
 
-    createAppDaysForDateRange(startDate: Date, endDate: Date): AppDay[] {
-      const calendar: AppDay[] = []
+    createHabitDaysForDateRange(startDate: Date, endDate: Date): HabitDay[] {
+      const calendar: HabitDay[] = []
       const interval = Interval.fromDateTimes(startDate, endDate)
       const daysBetween = interval.start.diff(interval.end, "day").toObject().days
       const daysBetweenAbs = Math.abs(daysBetween!!)
@@ -36,8 +36,8 @@ export const useCalendarStore = defineStore("calendar", {
       return calendar
     },
 
-    createAppDaysForMissingDays(missingDays: Date[]): AppDay[] {
-      const calendar: AppDay[] = []
+    createHabitDaysForMissingDays(missingDays: Date[]): HabitDay[] {
+      const calendar: HabitDay[] = []
       missingDays.forEach((day) => {
         calendar.push({
           date: day,
@@ -48,7 +48,7 @@ export const useCalendarStore = defineStore("calendar", {
       return calendar
     },
 
-    setUserCalendar(dates: AppDay[]) {
+    setUserCalendar(dates: HabitDay[]) {
       this.allDays = dates
       this.sortDays()
       this.loadCurrentDay()
@@ -72,8 +72,8 @@ export const useCalendarStore = defineStore("calendar", {
     loadCalendar() {
       const startDay = DateTime.fromJSDate(this.startDate)
       const endDay = DateTime.fromJSDate(this.endDate)
-      const result = this.allDays.filter((appDay) => {
-        const thisDay = DateTime.fromJSDate(appDay.date)
+      const result = this.allDays.filter((habitDay) => {
+        const thisDay = DateTime.fromJSDate(habitDay.date)
         return thisDay >= startDay && thisDay < endDay
       })
       this.calendar = result
@@ -85,7 +85,7 @@ export const useCalendarStore = defineStore("calendar", {
       return daysAreTheSame
     },
 
-    toggleHabitForDate(date: AppDay, habit: Habit) {
+    toggleHabitForDate(date: HabitDay, habit: Habit) {
       this.loading = true
 
       // update habits for that day
@@ -148,7 +148,7 @@ export const useCalendarStore = defineStore("calendar", {
       })
 
       if (missingDays.length > 0) {
-        const missingDaysCreated = this.createAppDaysForMissingDays(missingDays)
+        const missingDaysCreated = this.createHabitDaysForMissingDays(missingDays)
 
         repository
           .loadAdditionalDays(missingDaysCreated)
@@ -157,7 +157,7 @@ export const useCalendarStore = defineStore("calendar", {
               // get user days
               repository
                 .getUserDays()
-                .then((allUserDays: AppDay[] | undefined) => {
+                .then((allUserDays: HabitDay[] | undefined) => {
                   if (allUserDays) {
                     this.setUserCalendar(allUserDays)
                   } else {
@@ -180,8 +180,8 @@ export const useCalendarStore = defineStore("calendar", {
     },
 
     isHabitCompletedToday(habit: Habit): Boolean {
-      const matchingDay = this.allDays.find((appDay) => {
-        return this.checkIfDaysAreSame(appDay.date, this.currentDay.date)
+      const matchingDay = this.allDays.find((habitDay) => {
+        return this.checkIfDaysAreSame(habitDay.date, this.currentDay.date)
       })!!
       return matchingDay.habitsCompleted.some((habitId) => {
         return habitId == habit.id

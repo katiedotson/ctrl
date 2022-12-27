@@ -1,11 +1,11 @@
 export interface UserData {
   userId: string
-  calendar: AppDay[]
+  habitCalendar: HabitDay[]
   habits: Habit[]
   name: string
 }
 
-export interface AppDay {
+export interface HabitDay {
   id: string
   date: Date
   habitsCompleted: string[]
@@ -19,12 +19,12 @@ export interface Habit {
 
 export interface DbUserData {
   userId: string
-  calendar: DbAppDay[]
+  habitCalendar: DbHabitDay[]
   habits: Habit[]
   name: string
 }
 
-export interface DbAppDay {
+export interface DbHabitDay {
   date: string
   habitsCompleted: string[]
 }

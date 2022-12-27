@@ -9,8 +9,8 @@
   </div>
 </template>
 <script lang="ts">
-import { useCalendarStore } from "@/stores/calendar"
-import type { AppDay, Habit } from "@/types/types"
+import { useHabitCalendarStore } from "@/stores/habit-calendar"
+import type { HabitDay, Habit } from "@/types/types"
 export default {
   props: {
     habitProp: {
@@ -18,21 +18,21 @@ export default {
       required: true,
     },
     currentDay: {
-      type: Object as () => AppDay,
+      type: Object as () => HabitDay,
       required: true,
     },
   },
   methods: {
     onClick: function () {
-      const calendarStore = useCalendarStore()
+      const calendarStore = useHabitCalendarStore()
       calendarStore.toggleHabitForDate(this.$props.currentDay, this.$props.habitProp)
     },
     checkHabitCompleted(): Boolean {
-      const calendarStore = useCalendarStore()
+      const calendarStore = useHabitCalendarStore()
       return calendarStore.isHabitCompletedToday(this.habitProp)
     },
     getHtmlForHabit(): string {
-      const calendarStore = useCalendarStore()
+      const calendarStore = useHabitCalendarStore()
       const isCompleted = calendarStore.isHabitCompletedToday(this.habitProp)
 
       if (isCompleted) {

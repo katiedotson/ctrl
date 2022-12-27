@@ -19,7 +19,7 @@
 </template>
 <script lang="ts">
 import { DateTime } from "luxon"
-import type { AppDay, Habit } from "@/types/types"
+import type { HabitDay, Habit } from "@/types/types"
 export default {
   props: {
     habits: {
@@ -27,12 +27,12 @@ export default {
       required: true,
     },
     days: {
-      type: Array as () => Array<AppDay>,
+      type: Array as () => Array<HabitDay>,
       required: true,
     },
   },
   methods: {
-    getFormattedDate(day: AppDay): string {
+    getFormattedDate(day: HabitDay): string {
       return DateTime.fromJSDate(day.date).toFormat("EEE MMM d")
     },
     getFormattedIcon(habit: Habit, date: any): string {
@@ -41,13 +41,13 @@ export default {
       }
       return ""
     },
-    dayClicked(day: AppDay) {
+    dayClicked(day: HabitDay) {
       this.$emit("dayClicked", day)
     },
     habitTitleClicked(habit: Habit) {
       this.$emit("habitClicked", habit)
     },
-    dateIsToday(day: AppDay): string {
+    dateIsToday(day: HabitDay): string {
       if (DateTime.fromJSDate(day.date).startOf("day").toMillis() == DateTime.fromJSDate(new Date()).startOf("day").toMillis()) return "today"
       else return ""
     },

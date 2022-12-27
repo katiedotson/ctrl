@@ -1,4 +1,4 @@
-import type { AppDay, Habit, UserData } from "@/types/types"
+import type { HabitDay, Habit, UserData } from "@/types/types"
 import { initializeApp } from "firebase/app"
 import { get, getDatabase, push, ref, set, update } from "firebase/database"
 import config from "./config"
@@ -19,13 +19,13 @@ export default {
     return undefined
   },
 
-  initializeCalendar: async (initialCal: AppDay[]): Promise<AppDay[] | undefined> => {
+  initializeCalendar: async (initialCal: HabitDay[]): Promise<HabitDay[] | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {
-      for (const appDay of initialCal) {
+      for (const habitDay of initialCal) {
         const retVal = await push(ref(db, `users/${userId}/calendar`))
-        appDay.id = retVal.key!!
-        set(retVal, mappers.toDbAppDay(appDay))
+        habitDay.id = retVal.key!!
+        set(retVal, mappers.toDbHabitDay(habitDay))
       }
       return initialCal
     }
@@ -91,37 +91,37 @@ export default {
     return undefined
   },
 
-  updateUserCalendar: async (date: AppDay): Promise<AppDay | undefined> => {
+  updateUserCalendar: async (date: HabitDay): Promise<HabitDay | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {
       const val = await ref(db, `users/${userId}/calendar/${date.id}`)
-      set(val, mappers.toDbAppDay(date))
+      set(val, mappers.toDbHabitDay(date))
       return date
     }
     return undefined
   },
 
-  loadAdditionalDays: async (daysToAdd: AppDay[]): Promise<AppDay[] | undefined> => {
+  loadAdditionalDays: async (daysToAdd: HabitDay[]): Promise<HabitDay[] | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {
-      for (const appDay of daysToAdd) {
+      for (const habitDay of daysToAdd) {
         const retVal = await push(ref(db, `users/${userId}/calendar`))
-        appDay.id = retVal.key!!
-        set(retVal, mappers.toDbAppDay(appDay))
+        habitDay.id = retVal.key!!
+        set(retVal, mappers.toDbHabitDay(habitDay))
       }
       return daysToAdd
     }
     return undefined
   },
 
-  getUserDays: async (): Promise<AppDay[] | undefined> => {
+  getUserDays: async (): Promise<HabitDay[] | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {
       const snapshot = await get(ref(db, `users/${userId}/calendar`))
       const value = snapshot.val()
       if (value) {
-        const userDaysIncomplete = mappers.flattenToArray<AppDay>(value)
-        const userDays = mappers.completeCalendarMapping(userDaysIncomplete)
+        const userDaysIncomplete = mappers.flattenToArray<HabitDay>(value)
+        const userDays = mappers.completeHabitCalendarMapping(userDaysIncomplete)
         return userDays
       }
     }

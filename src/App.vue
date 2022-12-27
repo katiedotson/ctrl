@@ -4,7 +4,7 @@ import Settings from "@/components/Settings/Settings.vue"
 import Loading from "./components/Loading/Loading.vue"
 import { useUserStore } from "@/stores/user"
 import { useHabitsStore } from "./stores/habits"
-import { useCalendarStore } from "./stores/calendar"
+import { useHabitCalendarStore } from "./stores/habit-calendar"
 </script>
 
 <template>
@@ -25,7 +25,7 @@ export default {
   mounted() {
     const userStore = useUserStore()
     const habitsStore = useHabitsStore()
-    const calendarStore = useCalendarStore()
+    const calendarStore = useHabitCalendarStore()
 
     userStore.$subscribe((_, state) => {
       this.userLoading = state.loading

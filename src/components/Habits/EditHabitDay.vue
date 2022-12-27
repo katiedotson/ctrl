@@ -12,8 +12,8 @@
   </section>
 </template>
 <script lang="ts">
-import type { Habit, AppDay } from "@/types/types"
-import { useCalendarStore } from "@/stores/calendar"
+import type { Habit, HabitDay } from "@/types/types"
+import { useHabitCalendarStore } from "@/stores/habit-calendar"
 import { DateTime } from "luxon"
 export default {
   props: {
@@ -22,7 +22,7 @@ export default {
       required: true,
     },
     day: {
-      type: Object as () => AppDay,
+      type: Object as () => HabitDay,
       required: true,
     },
   },
@@ -31,7 +31,7 @@ export default {
       return this.$props.day.habitsCompleted.some((habitId: string) => habitId == habit.id) ?? false
     },
     checkboxChange(habit: Habit) {
-      const calendarStore = useCalendarStore()
+      const calendarStore = useHabitCalendarStore()
       calendarStore.toggleHabitForDate(this.$props?.day, habit)
     },
     formattedDate(): string {

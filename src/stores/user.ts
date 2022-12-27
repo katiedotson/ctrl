@@ -2,7 +2,7 @@ import { defineStore } from "pinia"
 import repository from "@/repository/repository"
 import { getAuth, signOut, type OAuthCredential, type UserCredential } from "firebase/auth"
 import { localRepo } from "@/repository/local"
-import { useCalendarStore } from "./calendar"
+import { useHabitCalendarStore } from "./habit-calendar"
 import { useHabitsStore } from "./habits"
 import type { UserData } from "@/types/types"
 
@@ -65,30 +65,30 @@ export const useUserStore = defineStore("user", {
     },
     errorLoadingUser() {
       this.$state.loading = false
-      const calendarStore = useCalendarStore()
+      const calendarStore = useHabitCalendarStore()
       const habitsStore = useHabitsStore()
       calendarStore.errorLoadingData()
       habitsStore.errorLoadingData()
     },
     loadExistingUserData(user: UserData) {
       this.$state.name = user.name
-      const calendarStore = useCalendarStore()
+      const calendarStore = useHabitCalendarStore()
       const habitsStore = useHabitsStore()
-      calendarStore.setUserCalendar(user.calendar)
+      calendarStore.setUserCalendar(user.habitCalendar)
       habitsStore.setUserHabits(user.habits)
     },
     createUser(userId: string, userName: string | null) {
       repository
         .addUser({
           userId: userId,
-          calendar: [],
+          habitCalendar: [],
           habits: [],
           name: userName ?? "",
         })
         .then((data: UserData | undefined) => {
           this.$state.loading = false
           if (data) {
-            const calendarStore = useCalendarStore()
+            const calendarStore = useHabitCalendarStore()
             const habitsStore = useHabitsStore()
             calendarStore.initialize()
             habitsStore.initialize()

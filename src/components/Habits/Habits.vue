@@ -44,8 +44,8 @@ import Datepicker from "@vuepic/vue-datepicker"
 </template>
 <script lang="ts">
 import { useHabitsStore } from "@/stores/habits"
-import { useCalendarStore } from "@/stores/calendar"
-import type { AppDay, Habit } from "@/types/types"
+import { useHabitCalendarStore } from "@/stores/habit-calendar"
+import type { HabitDay, Habit } from "@/types/types"
 import "@vuepic/vue-datepicker/dist/main.css"
 export default {
   mounted() {
@@ -57,7 +57,7 @@ export default {
     })
 
     // calendar
-    const calendarStore = useCalendarStore()
+    const calendarStore = useHabitCalendarStore()
     this.days = calendarStore.calendar
     calendarStore.$subscribe(
       (_, state) => {
@@ -76,8 +76,8 @@ export default {
   data() {
     return {
       habits: [] as Habit[],
-      days: [] as AppDay[],
-      dateModalDay: undefined as AppDay | undefined,
+      days: [] as HabitDay[],
+      dateModalDay: undefined as HabitDay | undefined,
       date: [] as Date[],
       newHabit: undefined as Habit | undefined,
       editHabit: undefined as Habit | undefined,
@@ -85,13 +85,13 @@ export default {
   },
   methods: {
     handleDateChange(dates: any) {
-      const calendarStore = useCalendarStore()
+      const calendarStore = useHabitCalendarStore()
       calendarStore.changeDateRange(dates[0] as Date, dates[1] as Date)
     },
     closeDateModal() {
       this.dateModalDay = undefined
     },
-    dayClicked(day: AppDay) {
+    dayClicked(day: HabitDay) {
       this.dateModalDay = day
     },
     addNewHabit() {
