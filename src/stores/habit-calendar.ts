@@ -1,6 +1,6 @@
 import repository from "@/repository/repository"
 import type { HabitDay, Habit } from "@/types/types"
-import { DateTime, Interval } from "luxon"
+import { DateUtils } from "@/util/date-utils"
 import { defineStore } from "pinia"
 
 export const useHabitCalendarStore = defineStore("calendar", {
@@ -8,8 +8,8 @@ export const useHabitCalendarStore = defineStore("calendar", {
     loading: true,
     allDays: [] as HabitDay[],
     calendar: [] as HabitDay[],
-    startDate: DateTime.fromJSDate(new Date()).startOf("week").toJSDate(),
-    endDate: DateTime.fromJSDate(new Date()).startOf("week").plus({ weeks: 1 }).toJSDate(),
+    startDate: DateUtils.startOfWeek(new Date()),
+    endDate: DateUtils.plusWeeks(DateUtils.startOfWeek(new Date()), 1),
     currentDay: {} as HabitDay,
   }),
   actions: {
@@ -22,13 +22,11 @@ export const useHabitCalendarStore = defineStore("calendar", {
 
     createHabitDaysForDateRange(startDate: Date, endDate: Date): HabitDay[] {
       const calendar: HabitDay[] = []
-      const interval = Interval.fromDateTimes(startDate, endDate)
-      const daysBetween = interval.start.diff(interval.end, "day").toObject().days
-      const daysBetweenAbs = Math.abs(daysBetween!!)
+      const daysBetween = DateUtils.daysBetween(startDate, endDate)
 
-      for (let index = 0; index < daysBetweenAbs; index++) {
+      for (let index = 0; index < daysBetween; index++) {
         calendar.push({
-          date: DateTime.fromJSDate(startDate).startOf("day").plus({ days: index }).toJSDate(),
+          date: DateUtils.plusDays(DateUtils.startOfDay(startDate), index),
           habitsCompleted: [],
           id: "",
         })
@@ -64,25 +62,17 @@ export const useHabitCalendarStore = defineStore("calendar", {
 
     loadCurrentDay() {
       const today = this.allDays.find((day) => {
-        return this.checkIfDaysAreSame(new Date(), day.date)
+        return DateUtils.checkIfDaysAreSame(new Date(), day.date)
       })!!
       this.currentDay = today
     },
 
     loadCalendar() {
-      const startDay = DateTime.fromJSDate(this.startDate)
-      const endDay = DateTime.fromJSDate(this.endDate)
       const result = this.allDays.filter((habitDay) => {
-        const thisDay = DateTime.fromJSDate(habitDay.date)
-        return thisDay >= startDay && thisDay < endDay
+        return DateUtils.isDateBetween(this.startDate, this.endDate, habitDay.date)
       })
       this.calendar = result
       this.loading = false
-    },
-
-    checkIfDaysAreSame(dateOne: Date, dateTwo: Date): Boolean {
-      const daysAreTheSame = DateTime.fromJSDate(dateOne).startOf("day").toMillis() == DateTime.fromJSDate(dateTwo).startOf("day").toMillis()
-      return daysAreTheSame
     },
 
     toggleHabitForDate(date: HabitDay, habit: Habit) {
@@ -102,14 +92,14 @@ export const useHabitCalendarStore = defineStore("calendar", {
           if (res) {
             // update day in state
             this.allDays = this.allDays.map((day) => {
-              if (this.checkIfDaysAreSame(date?.date!!, day.date)) {
+              if (DateUtils.checkIfDaysAreSame(date?.date!!, day.date)) {
                 day = date
               }
               return day
             })
 
             // update today in state if the updated day was today
-            if (this.checkIfDaysAreSame(date.date, this.currentDay.date!!)) {
+            if (DateUtils.checkIfDaysAreSame(date.date, this.currentDay.date!!)) {
               this.currentDay = date
             }
 
@@ -128,22 +118,17 @@ export const useHabitCalendarStore = defineStore("calendar", {
     changeDateRange(startDate: Date, endDate: Date) {
       this.loading = true
 
-      this.startDate = DateTime.fromJSDate(startDate).startOf("day").toJSDate()
-      this.endDate = DateTime.fromJSDate(endDate).startOf("day").toJSDate()
+      this.startDate = DateUtils.startOfDay(startDate)
+      this.endDate = DateUtils.startOfDay(endDate)
 
       const loadedDays = this.allDays.map((it) => {
         return it.date
       })
-      const requestedDaysInterval = Interval.fromDateTimes(this.startDate, this.endDate)
-      var requestedDays = [] as Date[]
-      requestedDaysInterval.splitBy({ day: 1 }).forEach((it) => {
-        requestedDays.push(it.start.toJSDate())
-      })
-      requestedDays.push(requestedDaysInterval.end.toJSDate())
 
+      const requestedDays = DateUtils.dateArrayForInterval(this.startDate, this.endDate)
       const missingDays = requestedDays.filter((date) => {
         return !loadedDays.some((day) => {
-          return this.checkIfDaysAreSame(date, day)
+          return DateUtils.checkIfDaysAreSame(date, day)
         })
       })
 
@@ -181,7 +166,7 @@ export const useHabitCalendarStore = defineStore("calendar", {
 
     isHabitCompletedToday(habit: Habit): Boolean {
       const matchingDay = this.allDays.find((habitDay) => {
-        return this.checkIfDaysAreSame(habitDay.date, this.currentDay.date)
+        return DateUtils.checkIfDaysAreSame(habitDay.date, this.currentDay.date)
       })!!
       return matchingDay.habitsCompleted.some((habitId) => {
         return habitId == habit.id
