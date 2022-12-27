@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Habits from "./Habits.vue"
+import Budget from "./Budget.vue"
 import Time from "./Time.vue"
 import Welcome from "./Welcome.vue"
 import Login from "./Login.vue"
@@ -11,6 +12,7 @@ import Loading from "@/components/Loading/Loading.vue"
   <section v-if="user">
     <Welcome :name="user" />
     <Habits @habits-clicked="habitsTitleClicked" />
+    <Budget @budget-clicked="budgetTitleClicked" />
     <Time :currentTime="currentTime" />
   </section>
   <section v-if="!user">
@@ -41,6 +43,9 @@ export default {
     },
     habitsTitleClicked() {
       this.$router.push("/habits")
+    },
+    budgetTitleClicked() {
+      this.$router.push("/budget")
     },
   },
   data() {

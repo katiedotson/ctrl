@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "../views/HomeView.vue"
 import HabitsView from "../views/HabitsView.vue"
+import BudgetView from "../views/BudgetView.vue"
 import { useUserStore } from "@/stores/user"
 
 const router = createRouter({
@@ -15,6 +16,11 @@ const router = createRouter({
       path: "/habits",
       name: "habits",
       component: HabitsView,
+    },
+    {
+      path: "/budget",
+      name: "budget",
+      component: BudgetView,
     },
     // {
     // path: "/about",
