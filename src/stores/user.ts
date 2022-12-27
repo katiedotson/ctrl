@@ -5,6 +5,8 @@ import { localRepo } from "@/repository/local"
 import { useHabitCalendarStore } from "./habit-calendar"
 import { useHabitsStore } from "./habits"
 import type { UserData } from "@/types/types"
+import { useBudgetCalendarStore } from "./budget-calendar"
+import { useBudgetStore } from "./budget-categories"
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -83,15 +85,23 @@ export const useUserStore = defineStore("user", {
           userId: userId,
           habitCalendar: [],
           habits: [],
+          budgetCalendar: [],
+          budgetCategories: [],
           name: userName ?? "",
         })
         .then((data: UserData | undefined) => {
           this.$state.loading = false
           if (data) {
-            const calendarStore = useHabitCalendarStore()
+            const habitCalendarStore = useHabitCalendarStore()
             const habitsStore = useHabitsStore()
-            calendarStore.initialize()
+            const budgetCalendarStore = useBudgetCalendarStore()
+            const budgetStore = useBudgetStore()
+
             habitsStore.initialize()
+            habitCalendarStore.initialize()
+            budgetStore.initialize()
+            budgetCalendarStore.initialize()
+
             this.$state.name = data.name
           } else {
             this.errorLoadingUser()

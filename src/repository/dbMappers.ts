@@ -1,4 +1,4 @@
-import type { HabitDay, DbHabitDay, DbUserData, Habit, Id, UserData } from "@/types/types"
+import type { HabitDay, DbHabitDay, DbUserData, Habit, Id, UserData, BudgetCategory, BudgetDay } from "@/types/types"
 
 export default {
   toDbHabitDay(habitDay: HabitDay): DbHabitDay {
@@ -14,6 +14,8 @@ export default {
       userId: userResponse.userId,
       habitCalendar: this.flattenToArray<HabitDay>(userResponse.calendar),
       habits: this.flattenToArray<Habit>(userResponse.habits),
+      budgetCategories: this.flattenToArray<BudgetCategory>(userResponse.budgetCategories),
+      budgetCalendar: this.flattenToArray<BudgetDay>(userResponse.budgetCalendar),
     }
     if (userData.habitCalendar) {
       userData.habitCalendar = this.completeHabitCalendarMapping(userData.habitCalendar)
