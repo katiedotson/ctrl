@@ -57,6 +57,7 @@ export const useCalendarStore = defineStore("calendar", {
 
     sortDays() {
       this.allDays = this.allDays.sort((dayA, dayB) => {
+        // @ts-ignore
         return Number(dayA.date - dayB.date)
       })
     },
