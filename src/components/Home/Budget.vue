@@ -8,19 +8,24 @@ import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
     <table v-if="entries">
       <thead>
         <th scope="col">Notes</th>
-        <th scope="col">Cost</th>
+        <th scope="col" class="cost-col-header">Cost</th>
         <th scope="col">Category</th>
       </thead>
       <tbody>
         <tr v-for="entry in entries" v-bind:key="entry.id">
           <td>{{ entry.notes }}</td>
-          <td>{{ entry.cost }}</td>
-          <td>{{ entry.category }}</td>
+          <td class="cost-col">{{ entry.cost }}</td>
+          <td v-html="getCategoryDisplayText(entry.category)"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="cost-col">Total: 300.00</td>
+          <td></td>
         </tr>
       </tbody>
     </table>
     <div v-else>Nothing here yet.</div>
-    <div class="buttons no-float">
+    <div class="buttons">
       <button class="icon-btn" @click="addBudgetEntry"><span class="material-icons"> add </span>New entry</button>
     </div>
     <!-- Add Budget Entry Item Modal -->
@@ -78,6 +83,12 @@ export default {
     closeBudgetEntryModal() {
       this.addBudgetEntryItem = undefined
     },
+    getCategoryDisplayText(categoryId: string): string {
+      const category = this.categories.find((cat) => {
+        return cat.id == categoryId
+      })!!
+      return category.name + " " + category.icon
+    },
   },
 }
 </script>
@@ -99,5 +110,32 @@ h2 span {
 h2:hover span {
   display: inline-block;
   margin-left: 8px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td,
+table th {
+  padding: 8px;
+}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  border-block-end: 1px solid var(--color-heading);
+}
+
+.cost-col {
+  text-align: right;
+  padding-right: 32px;
+}
+
+.cost-col-header {
+  width: 200px;
+  word-wrap: break-word;
 }
 </style>

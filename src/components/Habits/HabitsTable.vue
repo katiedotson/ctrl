@@ -1,5 +1,5 @@
 <template>
-  <div id="table-scroll" class="table-scroll">
+  <div class="table-scroll">
     <table id="main-table">
       <thead>
         <th scope="col" id="empty"></th>
@@ -57,9 +57,6 @@ export default {
 <style scoped>
 #empty {
   z-index: 4;
-}
-.today {
-  background: blue;
 }
 .table-scroll {
   max-height: 80vh;

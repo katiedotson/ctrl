@@ -61,6 +61,10 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
           if (res) {
             this.allDays.map((day) => {
               if (DateUtils.checkIfDaysAreSame(res.date, day.date)) {
+                if (!res.entries) {
+                  res.entries = []
+                }
+                res.entries.push(entry)
                 return res
               } else return day
             })
