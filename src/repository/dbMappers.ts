@@ -1,4 +1,4 @@
-import type { HabitDay, DbHabitDay, DbUserData, Habit, Id, UserData, BudgetCategory, BudgetDay } from "@/types/types"
+import type { HabitDay, DbHabitDay, DbUserData, Habit, Id, UserData, BudgetCategory, BudgetDay, DbBudgetDay } from "@/types/types"
 
 export default {
   toDbHabitDay(habitDay: HabitDay): DbHabitDay {
@@ -8,7 +8,16 @@ export default {
     }
   },
 
+  toDbBudgetDay(budgetDay: BudgetDay): DbBudgetDay {
+    return {
+      id: budgetDay.id,
+      date: budgetDay.date.toUTCString(),
+      entries: budgetDay.entries.map((entry) => entry.id),
+    }
+  },
+
   userFromDatabaseResponse(userResponse: any): UserData {
+    console.log("user response", userResponse)
     const userData = {
       name: userResponse.name,
       userId: userResponse.userId,

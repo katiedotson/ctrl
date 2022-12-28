@@ -50,6 +50,12 @@ export interface DbHabitDay {
   habitsCompleted: string[]
 }
 
+export interface DbBudgetDay {
+  id: string
+  entries: string[]
+  date: string
+}
+
 export interface Id {
   id: string
 }

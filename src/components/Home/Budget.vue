@@ -1,10 +1,27 @@
 <template>
-  <div id="habits-box">
+  <div>
     <h2 @click="budgetClicked">Budget<span>&rarr;</span></h2>
+    <ul>
+      <li v-for="category in categories" v-bind:key="category.id">{{ category.name }}</li>
+    </ul>
   </div>
 </template>
 <script lang="ts">
+import type { BudgetCategory } from "@/types/types"
+import { useBudgetStore } from "@/stores/budget-categories"
 export default {
+  data() {
+    return {
+      categories: [] as BudgetCategory[],
+    }
+  },
+  mounted() {
+    const budgetCategoryStore = useBudgetStore()
+    this.categories = budgetCategoryStore.categories
+    budgetCategoryStore.$subscribe((_, state) => {
+      this.categories = state.categories
+    })
+  },
   methods: {
     budgetClicked() {
       this.$emit("budgetClicked")
@@ -14,6 +31,7 @@ export default {
 </script>
 <style scoped>
 h2 {
+  color: var(--color-heading);
   margin-top: 1em;
   font-size: 1rem;
   cursor: pointer;

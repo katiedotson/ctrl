@@ -15,8 +15,8 @@ export const useHabitCalendarStore = defineStore("calendar", {
   actions: {
     initialize() {
       const initialCalendar = this.createHabitDaysForDateRange(this.startDate, this.endDate)
-      repository.initializeCalendar(initialCalendar).then((_) => {
-        this.setUserCalendar(initialCalendar)
+      repository.initializeHabitCalendar(initialCalendar).then((_) => {
+        this.setHabitCalendar(initialCalendar)
       })
     },
 
@@ -46,28 +46,28 @@ export const useHabitCalendarStore = defineStore("calendar", {
       return calendar
     },
 
-    setUserCalendar(dates: HabitDay[]) {
+    setHabitCalendar(dates: HabitDay[]) {
       this.allDays = dates
-      this.sortDays()
-      this.loadCurrentDay()
-      this.loadCalendar()
+      this.sortHabitDays()
+      this.loadCurrentHabitDay()
+      this.loadHabitCalendar()
     },
 
-    sortDays() {
+    sortHabitDays() {
       this.allDays = this.allDays.sort((dayA, dayB) => {
         // @ts-ignore
         return Number(dayA.date - dayB.date)
       })
     },
 
-    loadCurrentDay() {
+    loadCurrentHabitDay() {
       const today = this.allDays.find((day) => {
         return DateUtils.checkIfDaysAreSame(new Date(), day.date)
       })!!
       this.currentDay = today
     },
 
-    loadCalendar() {
+    loadHabitCalendar() {
       const result = this.allDays.filter((habitDay) => {
         return DateUtils.isDateBetween(this.startDate, this.endDate, habitDay.date)
       })
@@ -104,7 +104,7 @@ export const useHabitCalendarStore = defineStore("calendar", {
             }
 
             // reset calendar
-            this.loadCalendar()
+            this.loadHabitCalendar()
           }
         })
         .catch((err) => {
@@ -144,7 +144,7 @@ export const useHabitCalendarStore = defineStore("calendar", {
                 .getUserDays()
                 .then((allUserDays: HabitDay[] | undefined) => {
                   if (allUserDays) {
-                    this.setUserCalendar(allUserDays)
+                    this.setHabitCalendar(allUserDays)
                   } else {
                     throw Error("Unable to load user days")
                   }
@@ -159,8 +159,8 @@ export const useHabitCalendarStore = defineStore("calendar", {
             console.error(err)
           })
       } else {
-        this.sortDays()
-        this.loadCalendar()
+        this.sortHabitDays()
+        this.loadHabitCalendar()
       }
     },
 

@@ -27,6 +27,7 @@ export const useUserStore = defineStore("user", {
           console.error(err)
         })
     },
+
     async loadUserDataFromCache() {
       this.$state.loading = true
       repository
@@ -44,6 +45,7 @@ export const useUserStore = defineStore("user", {
           console.error(error)
         })
     },
+
     async loadUserData(credential: OAuthCredential, result: UserCredential | null) {
       this.$state.loading = true
       const token = credential.accessToken
@@ -65,6 +67,7 @@ export const useUserStore = defineStore("user", {
           console.error(error)
         })
     },
+
     errorLoadingUser() {
       this.$state.loading = false
       const calendarStore = useHabitCalendarStore()
@@ -72,13 +75,22 @@ export const useUserStore = defineStore("user", {
       calendarStore.errorLoadingData()
       habitsStore.errorLoadingData()
     },
+
     loadExistingUserData(user: UserData) {
+      console.log("USEr", user)
+
       this.$state.name = user.name
       const calendarStore = useHabitCalendarStore()
       const habitsStore = useHabitsStore()
-      calendarStore.setUserCalendar(user.habitCalendar)
+      const budgetStore = useBudgetStore()
+      const budgetCalendarStore = useBudgetCalendarStore()
+
       habitsStore.setUserHabits(user.habits)
+      calendarStore.setHabitCalendar(user.habitCalendar)
+      budgetStore.setCategories(user.budgetCategories)
+      budgetCalendarStore.setCalendar(user.budgetCalendar)
     },
+
     createUser(userId: string, userName: string | null) {
       repository
         .addUser({
@@ -108,6 +120,7 @@ export const useUserStore = defineStore("user", {
           }
         })
     },
+
     async updateUserName(name: string): Promise<string | undefined> {
       this.$state.loading = true
       return repository
