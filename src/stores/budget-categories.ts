@@ -39,5 +39,9 @@ export const useBudgetStore = defineStore("budget-categories", {
       this.categories = categories
       this.loading = false
     },
+
+    saveNewCategory(category: BudgetCategory) {
+      console.log(category)
+    },
   },
 })
