@@ -114,6 +114,17 @@ export default {
     return undefined
   },
 
+  addBudgetCategory: async (category: BudgetCategory): Promise<BudgetCategory | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const retVal = await push(ref(db, `${paths.users}/${userId}/${paths.budgetCategories}`))
+      category.id = retVal.key!!
+      set(retVal, category)
+      return category
+    }
+    return undefined
+  },
+
   updateUserHabits: async (habits: Habit[]): Promise<Habit[] | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {

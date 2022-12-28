@@ -41,7 +41,21 @@ export const useBudgetStore = defineStore("budget-categories", {
     },
 
     saveNewCategory(category: BudgetCategory) {
-      console.log(category)
+      this.loading = true
+      repository
+        .addBudgetCategory(category)
+        .then((res) => {
+          if (res) {
+            this.$state.categories.push(res as BudgetCategory)
+            this.loading = false
+          } else {
+            throw Error("No response from API")
+          }
+        })
+        .catch((err) => {
+          this.loading = false
+          console.error(err)
+        })
     },
   },
 })
