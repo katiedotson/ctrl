@@ -1,5 +1,5 @@
 import repository from "@/repository/repository"
-import type { BudgetDay } from "@/types/types"
+import type { BudgetDay, BudgetEntry } from "@/types/types"
 import { DateUtils } from "@/util/date-utils"
 import { defineStore } from "pinia"
 
@@ -51,6 +51,31 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
       })!!
       this.calendar = days
       this.loading = false
+    },
+
+    addBudgetEntryForDate(entry: BudgetEntry, date: Date) {
+      const budgetDay = this.getBudgetDayFor(date)
+      repository
+        .updateBudgetCalendarDayEntries(budgetDay, entry)
+        .then((res) => {
+          if (res) {
+            this.allDays.map((day) => {
+              if (DateUtils.checkIfDaysAreSame(res.date, day.date)) {
+                return res
+              } else return day
+            })
+          }
+        })
+        .catch((err) => {
+          console.error(err)
+          this.loading = false
+        })
+    },
+
+    getBudgetDayFor(date: Date): BudgetDay {
+      return this.allDays.find((day) => {
+        return DateUtils.checkIfDaysAreSame(day.date, date)
+      })!!
     },
   },
 })

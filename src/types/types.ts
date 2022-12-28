@@ -52,7 +52,7 @@ export interface DbHabitDay {
 
 export interface DbBudgetDay {
   id: string
-  entries: string[]
+  entries: BudgetEntry[]
   date: string
 }
 

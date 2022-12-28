@@ -71,7 +71,9 @@ export default {
       }
     },
     saveNewBudgetEntry(budgetEntry: BudgetEntry) {
-      console.log(budgetEntry)
+      const budgetCalendarStore = useBudgetCalendarStore()
+      budgetCalendarStore.addBudgetEntryForDate(budgetEntry, new Date())
+      this.closeBudgetEntryModal()
     },
     closeBudgetEntryModal() {
       this.addBudgetEntryItem = undefined

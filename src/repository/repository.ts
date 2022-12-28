@@ -1,4 +1,4 @@
-import type { HabitDay, Habit, UserData, BudgetCategory, BudgetDay } from "@/types/types"
+import type { HabitDay, Habit, UserData, BudgetCategory, BudgetDay, BudgetEntry } from "@/types/types"
 import { initializeApp } from "firebase/app"
 import { get, getDatabase, push, ref, set, update } from "firebase/database"
 import config from "@/repository/config"
@@ -85,6 +85,7 @@ export default {
       const snapshot = await get(ref(db, `${paths.users}/${userId}`))
       const value = snapshot.val()
       if (value) {
+        console.log("db user", value)
         return mappers.userFromDatabaseResponse(value)
       }
     }
@@ -142,6 +143,17 @@ export default {
       const val = await ref(db, `${paths.users}/${userId}/${paths.habitCalendar}/${date.id}`)
       set(val, mappers.toDbHabitDay(date))
       return date
+    }
+    return undefined
+  },
+
+  updateBudgetCalendarDayEntries: async (day: BudgetDay, entry: BudgetEntry): Promise<BudgetDay | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const dayVal = await push(ref(db, `${paths.users}/${userId}/${paths.budgetCalendar}/${day.id}/entries`))
+      entry.id = dayVal.key!!
+      set(dayVal, entry)
+      return day
     }
     return undefined
   },

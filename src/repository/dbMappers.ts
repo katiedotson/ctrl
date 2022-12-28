@@ -12,7 +12,7 @@ export default {
     return {
       id: budgetDay.id,
       date: budgetDay.date.toUTCString(),
-      entries: budgetDay.entries.map((entry) => entry.id),
+      entries: budgetDay.entries,
     }
   },
 
