@@ -1,4 +1,4 @@
-import type { HabitDay, DbHabitDay, DbUserData, Habit, Id, UserData, BudgetCategory, BudgetDay, DbBudgetDay } from "@/types/types"
+import type { HabitDay, DbHabitDay, DbUserData, Habit, Id, UserData, BudgetCategory, BudgetDay, DbBudgetDay, BudgetEntry } from "@/types/types"
 
 export default {
   toDbHabitDay(habitDay: HabitDay): DbHabitDay {
@@ -47,10 +47,13 @@ export default {
     return calendar
   },
 
-  completeBudgetCalendarMapping(calendar: any[], categories: BudgetCategory[]): BudgetDay[] {
-    calendar.map((budgetDay) => {
-      if (budgetDay && budgetDay.entries) {
+  completeBudgetCalendarMapping(calendar: any, categories: BudgetCategory[]): BudgetDay[] {
+    calendar.map((budgetDay: any) => {
+      if (budgetDay && !budgetDay.entries) {
         budgetDay.entries = []
+      }
+      if (budgetDay && budgetDay.entries) {
+        budgetDay.entries = this.flattenToArray<BudgetEntry>(budgetDay.entries)
       }
       if (budgetDay && budgetDay.entries && budgetDay.entries.length > 0) {
         budgetDay.entries.map((entry: any) => categories.find((category) => category.id == entry))

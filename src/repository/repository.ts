@@ -85,7 +85,6 @@ export default {
       const snapshot = await get(ref(db, `${paths.users}/${userId}`))
       const value = snapshot.val()
       if (value) {
-        console.log("db user", value)
         return mappers.userFromDatabaseResponse(value)
       }
     }
