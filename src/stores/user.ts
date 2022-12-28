@@ -2,11 +2,11 @@ import { defineStore } from "pinia"
 import repository from "@/repository/repository"
 import { getAuth, signOut, type OAuthCredential, type UserCredential } from "firebase/auth"
 import { localRepo } from "@/repository/local"
-import { useHabitCalendarStore } from "./habit-calendar"
-import { useHabitsStore } from "./habits"
+import { useHabitCalendarStore } from "@/stores/habit-calendar"
+import { useHabitsStore } from "@/stores/habits"
+import { useBudgetCalendarStore } from "@/stores/budget-calendar"
+import { useBudgetStore } from "@/stores/budget-categories"
 import type { UserData } from "@/types/types"
-import { useBudgetCalendarStore } from "./budget-calendar"
-import { useBudgetStore } from "./budget-categories"
 
 export const useUserStore = defineStore("user", {
   state: () => ({

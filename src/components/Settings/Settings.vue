@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user"
-import Modal from "../Modal/Modal.vue"
+import Modal from "@/components/Modal/Modal.vue"
 </script>
 
 <template>

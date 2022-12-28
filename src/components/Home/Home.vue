@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Habits from "./Habits.vue"
-import Budget from "./Budget.vue"
-import Time from "./Time.vue"
-import Welcome from "./Welcome.vue"
-import Login from "./Login.vue"
+import Habits from "@/components/Home/Habits.vue"
+import Budget from "@/components/Home/Budget.vue"
+import Time from "@/components/Home/Time.vue"
+import Welcome from "@/components/Home/Welcome.vue"
+import Login from "@/components/Home/Login.vue"
 import Loading from "@/components/Loading/Loading.vue"
 </script>
 

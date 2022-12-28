@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
-import HomeView from "../views/HomeView.vue"
-import HabitsView from "../views/HabitsView.vue"
-import BudgetView from "../views/BudgetView.vue"
+import HomeView from "@/views/HomeView.vue"
+import HabitsView from "@/views/HabitsView.vue"
+import BudgetView from "@/views/BudgetView.vue"
 import { useUserStore } from "@/stores/user"
 
 const router = createRouter({

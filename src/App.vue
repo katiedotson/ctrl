@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router"
 import Settings from "@/components/Settings/Settings.vue"
-import Loading from "./components/Loading/Loading.vue"
+import Loading from "@/components/Loading/Loading.vue"
 import { useUserStore } from "@/stores/user"
-import { useHabitsStore } from "./stores/habits"
-import { useHabitCalendarStore } from "./stores/habit-calendar"
+import { useHabitsStore } from "@/stores/habits"
+import { useHabitCalendarStore } from "@/stores/habit-calendar"
 </script>
 
 <template>

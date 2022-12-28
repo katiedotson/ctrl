@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Budget from "@/components/Budget/Budget.vue"
-import BackArrow from "../components/BackArrow/BackArrow.vue"
+import BackArrow from "@/components/BackArrow/BackArrow.vue"
 </script>
 
 <template>

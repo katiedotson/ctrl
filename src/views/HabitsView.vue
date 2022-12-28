@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Habits from "../components/Habits/Habits.vue"
-import BackArrow from "../components/BackArrow/BackArrow.vue"
+import Habits from "@/components/Habits/Habits.vue"
+import BackArrow from "@/components/BackArrow/BackArrow.vue"
 </script>
 
 <template>

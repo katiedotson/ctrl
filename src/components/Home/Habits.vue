@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HabitBox from "./HabitBox.vue"
+import HabitBox from "@/components/Home/HabitBox.vue"
 </script>
 <template>
   <div id="habits-box">

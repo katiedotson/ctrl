@@ -1,12 +1,12 @@
 import { createApp } from "vue"
 import { createPinia } from "pinia"
 
-import App from "./App.vue"
-import router from "./router"
+import App from "@/App.vue"
+import router from "@/router"
 
 import "./assets/main.css"
 
-import { useUserStore } from "./stores/user"
+import { useUserStore } from "@/stores/user"
 import { getAuth, GoogleAuthProvider, getRedirectResult } from "firebase/auth"
 
 const app = createApp(App)

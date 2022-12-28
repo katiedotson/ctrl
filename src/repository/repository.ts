@@ -1,9 +1,9 @@
 import type { HabitDay, Habit, UserData, BudgetCategory, BudgetDay } from "@/types/types"
 import { initializeApp } from "firebase/app"
 import { get, getDatabase, push, ref, set, update } from "firebase/database"
-import config from "./config"
-import { localRepo } from "./local"
-import mappers from "./dbMappers"
+import config from "@/repository/config"
+import { localRepo } from "@/repository/local"
+import mappers from "@/repository/dbMappers"
 
 const firebaseConfig = config
 

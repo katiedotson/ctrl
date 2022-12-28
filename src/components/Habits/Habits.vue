@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Modal from "../Modal/Modal.vue"
-import EditHabitDay from "./EditHabitDay.vue"
-import HabitsTable from "./HabitsTable.vue"
-import AddHabit from "./AddHabit.vue"
-import EditHabit from "./EditHabit.vue"
+import Modal from "@/components/Modal/Modal.vue"
+import EditHabitDay from "@/components/Habits/EditHabitDay.vue"
+import HabitsTable from "@/components/Habits/HabitsTable.vue"
+import AddHabit from "@/components/Habits/AddHabit.vue"
+import EditHabit from "@/components/Habits/EditHabit.vue"
 import Datepicker from "@vuepic/vue-datepicker"
 </script>
 <template>
