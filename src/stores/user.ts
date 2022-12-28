@@ -77,8 +77,6 @@ export const useUserStore = defineStore("user", {
     },
 
     loadExistingUserData(user: UserData) {
-      console.log("USEr", user)
-
       this.$state.name = user.name
       const calendarStore = useHabitCalendarStore()
       const habitsStore = useHabitsStore()

@@ -17,11 +17,10 @@ export default {
   },
 
   userFromDatabaseResponse(userResponse: any): UserData {
-    console.log("user response", userResponse)
     const userData = {
       name: userResponse.name,
       userId: userResponse.userId,
-      habitCalendar: this.flattenToArray<HabitDay>(userResponse.calendar),
+      habitCalendar: this.flattenToArray<HabitDay>(userResponse.habitCalendar),
       habits: this.flattenToArray<Habit>(userResponse.habits),
       budgetCategories: this.flattenToArray<BudgetCategory>(userResponse.budgetCategories),
       budgetCalendar: this.flattenToArray<BudgetDay>(userResponse.budgetCalendar),
@@ -29,6 +28,10 @@ export default {
     if (userData.habitCalendar) {
       userData.habitCalendar = this.completeHabitCalendarMapping(userData.habitCalendar)
     }
+    if (userData.budgetCalendar) {
+      userData.budgetCalendar = this.completeBudgetCalendarMapping(userData.budgetCalendar, userData.budgetCategories)
+    }
+    console.log("user mapped", userData)
     return userData
   },
 
@@ -40,6 +43,22 @@ export default {
       if (habitDay) {
         habitDay.date = new Date(habitDay.date)
       }
+    })
+    return calendar
+  },
+
+  completeBudgetCalendarMapping(calendar: any[], categories: BudgetCategory[]): BudgetDay[] {
+    calendar.map((budgetDay) => {
+      if (budgetDay && budgetDay.entries) {
+        budgetDay.entries = []
+      }
+      if (budgetDay && budgetDay.entries && budgetDay.entries.length > 0) {
+        budgetDay.entries.map((entry: any) => categories.find((category) => category.id == entry))
+      }
+      if (budgetDay) {
+        budgetDay.date = new Date(budgetDay.date)
+      }
+      return budgetDay
     })
     return calendar
   },
