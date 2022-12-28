@@ -7,6 +7,7 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
   state: () => ({
     allDays: [] as BudgetDay[],
     calendar: [] as BudgetDay[],
+    currentDay: {} as BudgetDay,
     startDate: DateUtils.startOfWeek(new Date()),
     endDate: DateUtils.plusWeeks(DateUtils.startOfWeek(new Date()), 1),
     loading: true,
@@ -37,6 +38,9 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
 
     setCalendar(days: BudgetDay[]) {
       this.allDays = days
+      this.currentDay = this.allDays.find((day) => {
+        return DateUtils.checkIfDaysAreSame(new Date(), day.date)
+      })!!
       this.calendar = days
       this.loading = false
     },

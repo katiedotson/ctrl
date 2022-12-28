@@ -1,18 +1,46 @@
+<script setup lang="ts">
+import Modal from "@/components/Modal/Modal.vue"
+</script>
 <template>
   <div>
     <h2 @click="budgetClicked">Budget<span>&rarr;</span></h2>
-    <ul>
-      <li v-for="category in categories" v-bind:key="category.id">{{ category.name }}</li>
-    </ul>
+    <table v-if="entries">
+      <thead>
+        <th scope="col">Notes</th>
+        <th scope="col">Cost</th>
+        <th scope="col">Category</th>
+      </thead>
+      <tbody>
+        <tr v-for="entry in entries" v-bind:key="entry.id">
+          <td>{{ entry.notes }}</td>
+          <td>{{ entry.cost }}</td>
+          <td>{{ entry.category }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-else>Nothing here yet.</div>
+    <div class="buttons no-float">
+      <button class="icon-btn" @click="addBudgetEntry"><span class="material-icons"> add </span>New entry</button>
+    </div>
+    <Modal v-if="addBudgetEntryItem" @close-modal="closeBudgetEntryModal">
+      <template v-slot:title> New budget entry </template>
+      <template v-slot:content>
+        <p>Todo</p>
+      </template>
+    </Modal>
   </div>
 </template>
 <script lang="ts">
-import type { BudgetCategory } from "@/types/types"
+import type { BudgetCategory, BudgetDay, BudgetEntry } from "@/types/types"
 import { useBudgetStore } from "@/stores/budget-categories"
+import { useBudgetCalendarStore } from "@/stores/budget-calendar"
 export default {
   data() {
     return {
       categories: [] as BudgetCategory[],
+      today: {} as BudgetDay,
+      entries: [] as BudgetEntry[],
+      addBudgetEntryItem: undefined as BudgetEntry | undefined,
     }
   },
   mounted() {
@@ -21,10 +49,27 @@ export default {
     budgetCategoryStore.$subscribe((_, state) => {
       this.categories = state.categories
     })
+
+    const budgetCalendarStore = useBudgetCalendarStore()
+    this.entries = budgetCalendarStore.currentDay.entries
+    budgetCalendarStore.$subscribe((_, state) => {
+      this.entries = state.currentDay.entries
+    })
   },
   methods: {
     budgetClicked() {
       this.$emit("budgetClicked")
+    },
+    addBudgetEntry() {
+      this.addBudgetEntryItem = {
+        id: "",
+        notes: "",
+        cost: 0.0,
+        category: "",
+      }
+    },
+    closeBudgetEntryModal() {
+      this.addBudgetEntryItem = undefined
     },
   },
 }
@@ -47,8 +92,5 @@ h2 span {
 h2:hover span {
   display: inline-block;
   margin-left: 8px;
-}
-#habits-box {
-  color: var(--color-heading);
 }
 </style>

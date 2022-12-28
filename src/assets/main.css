@@ -70,3 +70,21 @@ button {
 .buttons :last-child {
   margin-left: 12px;
 }
+.buttons.no-float {
+  display: block;
+  width: max-content;
+  margin: 0;
+}
+.buttons button.icon-btn {
+  font-size: 1em;
+  font-size: 1em;
+  padding: 4px 16px 10px 16px;
+}
+.buttons button.icon-btn span.material-icons {
+  position: relative;
+  top: 6px;
+  margin-right: 8px;
+}
+.buttons.no-float :last-child {
+  margin-left: 0;
+}

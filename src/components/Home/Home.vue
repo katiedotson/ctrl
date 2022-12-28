@@ -4,7 +4,6 @@ import Budget from "./Budget.vue"
 import Time from "./Time.vue"
 import Welcome from "./Welcome.vue"
 import Login from "./Login.vue"
-import Modal from "@/components/Modal/Modal.vue"
 import Loading from "@/components/Loading/Loading.vue"
 </script>
 
