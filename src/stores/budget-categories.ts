@@ -10,11 +10,19 @@ export const useBudgetStore = defineStore("budget-categories", {
   actions: {
     initialize() {
       const categories = this.initialCategories()
-      repository.initializeBudgetCategories(categories).then((res) => {
-        if (res) {
-          this.setCategories(res)
-        }
-      })
+      repository
+        .initializeBudgetCategories(categories)
+        .then((res) => {
+          if (res) {
+            this.setCategories(res)
+          } else {
+            throw Error("No response from API")
+          }
+        })
+        .catch((err) => {
+          console.error(err)
+          this.loading = false
+        })
     },
 
     initialCategories(): BudgetCategory[] {

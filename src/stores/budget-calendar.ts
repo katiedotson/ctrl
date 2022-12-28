@@ -15,11 +15,19 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
   actions: {
     initialize() {
       const initialCal = this.createBudgetDaysForDateRange(this.startDate, this.endDate)
-      repository.initializeBudgetCalendar(initialCal).then((res) => {
-        if (res) {
-          this.setCalendar(res)
-        }
-      })
+      repository
+        .initializeBudgetCalendar(initialCal)
+        .then((res) => {
+          if (res) {
+            this.setCalendar(res)
+          } else {
+            throw Error("No response from API")
+          }
+        })
+        .catch((err) => {
+          console.error(err)
+          this.loading = false
+        })
     },
 
     createBudgetDaysForDateRange(startDate: Date, endDate: Date): BudgetDay[] {
