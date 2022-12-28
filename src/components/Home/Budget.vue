@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Modal from "@/components/Modal/Modal.vue"
+import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
 </script>
 <template>
   <div>
@@ -22,10 +23,11 @@ import Modal from "@/components/Modal/Modal.vue"
     <div class="buttons no-float">
       <button class="icon-btn" @click="addBudgetEntry"><span class="material-icons"> add </span>New entry</button>
     </div>
+    <!-- Add Budget Entry Item Modal -->
     <Modal v-if="addBudgetEntryItem" @close-modal="closeBudgetEntryModal">
       <template v-slot:title> New budget entry </template>
       <template v-slot:content>
-        <p>Todo</p>
+        <AddBudgetEntry @save-new-entry="saveNewBudgetEntry" :budget-entry-prop="addBudgetEntryItem" :budget-categories-prop="categories" />
       </template>
     </Modal>
   </div>
@@ -67,6 +69,9 @@ export default {
         cost: 0.0,
         category: "",
       }
+    },
+    saveNewBudgetEntry(budgetEntry: BudgetEntry) {
+      console.log(budgetEntry)
     },
     closeBudgetEntryModal() {
       this.addBudgetEntryItem = undefined
