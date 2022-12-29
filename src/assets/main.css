@@ -78,7 +78,7 @@ button {
 .buttons button.icon-btn {
   font-size: 1em;
   font-size: 1em;
-  padding: 4px 16px 10px 16px;
+  padding: 4px 16px 10px 0px;
 }
 .buttons button.icon-btn span.material-icons {
   position: relative;

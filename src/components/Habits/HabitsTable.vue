@@ -85,6 +85,9 @@ export default {
   border: 1px solid rgba(0, 0, 0, 0.093);
   line-height: 1em;
 }
+.table-scroll td {
+  font-size: 2em;
+}
 .table-scroll th span,
 .table-scroll td span {
   font-size: 1em;
