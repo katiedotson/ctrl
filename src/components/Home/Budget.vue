@@ -4,7 +4,7 @@ import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
 </script>
 <template>
   <div>
-    <h2 @click="budgetClicked">Budget<span>&rarr;</span></h2>
+    <h1 @click="budgetClicked">Budget<span>&nbsp;&rarr;</span></h1>
     <budget-day-table v-if="entries" :entries="entries" :categories="categories" />
     <div v-else>Nothing here yet.</div>
     <div class="buttons">
@@ -77,22 +77,16 @@ export default {
 }
 </script>
 <style scoped>
-h2 {
+h1 {
   color: var(--color-heading);
   margin-top: 1em;
-  font-size: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
+  width: fit-content;
 }
-h2:hover {
+h1:hover {
   -webkit-animation: glow 1s ease-in-out infinite alternate;
   -moz-animation: glow 1s ease-in-out infinite alternate;
   animation: glow 1s ease-in-out infinite alternate;
-}
-h2 span {
-  display: none;
-}
-h2:hover span {
-  display: inline-block;
-  margin-left: 8px;
 }
 </style>

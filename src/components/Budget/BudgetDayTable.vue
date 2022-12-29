@@ -1,23 +1,16 @@
 <template>
-  <table v-if="entries">
-    <thead>
-      <th scope="col">Notes</th>
-      <th scope="col" class="cost-col-header">Cost</th>
-      <th scope="col">Category</th>
-    </thead>
-    <tbody>
-      <tr v-for="entry in entries" v-bind:key="entry.id">
-        <td>{{ entry.notes }}</td>
-        <td class="cost-col">{{ entry.cost }}</td>
-        <td v-html="getCategoryDisplayText(entry.category)"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td class="cost-col">Total: 300.00</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
+  <div>
+    <div class="Rtable Rtable--3cols Rtable--collapse-hide">
+      <div class="Rtable-cell">Category</div>
+      <div class="Rtable-cell">Notes</div>
+      <div class="Rtable-cell" style="text-align: right">Cost</div>
+    </div>
+    <div class="Rtable Rtable--3cols Rtable--collapse" v-for="entry in entries" v-bind:key="entry.id">
+      <div class="Rtable-cell" v-html="getCategoryDisplayText(entry.category)"></div>
+      <div class="Rtable-cell">{{ entry.notes }}</div>
+      <div class="Rtable-cell" style="text-align: right">{{ entry.cost }}</div>
+    </div>
+  </div>
 </template>
 <script lang="ts">
 import type { BudgetCategory, BudgetEntry } from "@/types/types"
@@ -43,30 +36,41 @@ export default {
 }
 </script>
 <style scoped>
-table {
-  border-collapse: collapse;
+.Rtable {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 1em 0;
+  padding: 0;
+}
+.Rtable-cell {
+  box-sizing: border-box;
+  flex-grow: 1;
   width: 100%;
+  padding: 0.8em 0;
+  overflow: hidden;
+  list-style: none;
 }
-
-table td,
-table th {
-  padding: 8px;
+.Rtable--3cols > .Rtable-cell {
+  width: 33.33%;
 }
-
-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  border-block-end: 1px solid var(--color-heading);
+.Rtable {
+  position: relative;
+  top: 3px;
+  left: 3px;
+  border-block-end: 1px solid var(--color-border);
 }
-
-.cost-col {
-  text-align: right;
-  padding-right: 32px;
+.Rtable-cell {
+  margin: -3px 0 0 -3px;
 }
-
-.cost-col-header {
-  width: 200px;
-  word-wrap: break-word;
+@media all and (max-width: 500px) {
+  .Rtable--collapse {
+    display: block;
+  }
+  .Rtable--collapse > .Rtable-cell {
+    width: 100% !important;
+  }
+  .Rtable--collapse-hide {
+    display: none;
+  }
 }
 </style>

@@ -3,7 +3,7 @@ import HabitBox from "@/components/Home/HabitBox.vue"
 </script>
 <template>
   <div id="habits-box">
-    <h2 @click="habitsClicked">Habits<span>&rarr;</span></h2>
+    <h1 @click="habitsClicked">Habits<span>&nbsp;&rarr;</span></h1>
     <div v-if="habits != undefined && habits.length != 0" id="habits-container">
       <HabitBox v-for="habit in habits" :habitProp="habit" :currentDay="currentDay" v-bind:key="habit.id" />
     </div>
@@ -44,22 +44,16 @@ export default {
 }
 </script>
 <style scoped>
-h2 {
+h1 {
   margin-top: 1em;
-  font-size: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
+  width: fit-content;
 }
-h2:hover {
+h1:hover {
   -webkit-animation: glow 1s ease-in-out infinite alternate;
   -moz-animation: glow 1s ease-in-out infinite alternate;
   animation: glow 1s ease-in-out infinite alternate;
-}
-h2 span {
-  display: none;
-}
-h2:hover span {
-  display: inline-block;
-  margin-left: 8px;
 }
 #habits-box {
   color: var(--color-heading);
