@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Modal from "@/components/Modal/Modal.vue"
 import AddBudgetCategory from "@/components/Budget/AddBudgetCategory.vue"
+import EditBudgetCategories from "@/components/Budget/EditBudgetCategories.vue"
 </script>
 <template>
   <section>
     <h1>Budget</h1>
     <div class="buttons">
+      <button @click="editBudgetCategories">Edit categories</button>
       <button @click="addNewBudgetCategory">Add a category</button>
     </div>
     <div v-for="day in calendar" v-bind:key="day.id">
@@ -18,6 +20,13 @@ import AddBudgetCategory from "@/components/Budget/AddBudgetCategory.vue"
       <template v-slot:title> Add a new category </template>
       <template v-slot:content>
         <AddBudgetCategory :newCategoryProp="newBudgetCategory" @save-new-category="saveNewCategory" />
+      </template>
+    </Modal>
+    <!-- Edit categories modal -->
+    <Modal v-if="editBudgetCategory" @close-modal="closeEditCategoryModal">
+      <template v-slot:title> Edit categories </template>
+      <template v-slot:content>
+        <EditBudgetCategories :categories="budgetCategories" />
       </template>
     </Modal>
   </section>
@@ -35,6 +44,7 @@ export default {
       budgetCategories: [] as BudgetCategory[],
       newBudgetCategory: undefined as BudgetCategory | undefined,
       calendar: [] as BudgetDay[],
+      editBudgetCategory: false,
     }
   },
   methods: {
@@ -51,6 +61,12 @@ export default {
     },
     getDateFormatted(date: Date): string {
       return DateTime.fromJSDate(date).toFormat("yyyy.MM.dd")
+    },
+    editBudgetCategories() {
+      this.editBudgetCategory = true
+    },
+    closeEditCategoryModal() {
+      this.editBudgetCategory = false
     },
   },
   mounted() {
