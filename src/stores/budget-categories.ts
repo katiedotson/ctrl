@@ -57,5 +57,24 @@ export const useBudgetStore = defineStore("budget-categories", {
           console.error(err)
         })
     },
+
+    updateCategory(category: BudgetCategory) {
+      this.loading = true
+      this.categories.map((cat) => {
+        if (cat.id == category.id) {
+          return category
+        }
+        return cat
+      })
+      repository
+        .updateBudgetCategories(this.categories)
+        .then((res) => {
+          this.loading = false
+        })
+        .catch((err) => {
+          this.loading = false
+          console.error(err)
+        })
+    },
   },
 })

@@ -26,7 +26,7 @@ import EditBudgetCategories from "@/components/Budget/EditBudgetCategories.vue"
     <Modal v-if="editBudgetCategory" @close-modal="closeEditCategoryModal">
       <template v-slot:title> Edit categories </template>
       <template v-slot:content>
-        <EditBudgetCategories :categories="budgetCategories" />
+        <EditBudgetCategories :categories="budgetCategories" @done-editing-categories="closeEditCategoryModal" />
       </template>
     </Modal>
   </section>

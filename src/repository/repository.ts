@@ -125,6 +125,17 @@ export default {
     return undefined
   },
 
+  updateBudgetCategories: async (categories: BudgetCategory[]): Promise<BudgetCategory[] | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const docRef = ref(db, `${paths.users}/${userId}`)
+      await update(docRef, {
+        budgetCategories: categories,
+      })
+    }
+    return undefined
+  },
+
   updateUserHabits: async (habits: Habit[]): Promise<Habit[] | undefined> => {
     const userId = localRepo.loadUserId()
     if (userId) {

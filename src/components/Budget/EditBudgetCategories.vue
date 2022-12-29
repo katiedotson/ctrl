@@ -16,6 +16,7 @@
 </template>
 <script lang="ts">
 import type { BudgetCategory } from "@/types/types"
+import { useBudgetStore } from "@/stores/budget-categories"
 export default {
   props: {
     categories: {
@@ -29,7 +30,11 @@ export default {
     }
   },
   methods: {
-    saveCategory() {},
+    saveCategory() {
+      const budgetStore = useBudgetStore()
+      budgetStore.updateCategory(this.category)
+      this.$emit("doneEditingCategories")
+    },
   },
 }
 </script>
