@@ -5,25 +5,7 @@ import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
 <template>
   <div>
     <h2 @click="budgetClicked">Budget<span>&rarr;</span></h2>
-    <table v-if="entries">
-      <thead>
-        <th scope="col">Notes</th>
-        <th scope="col" class="cost-col-header">Cost</th>
-        <th scope="col">Category</th>
-      </thead>
-      <tbody>
-        <tr v-for="entry in entries" v-bind:key="entry.id">
-          <td>{{ entry.notes }}</td>
-          <td class="cost-col">{{ entry.cost }}</td>
-          <td v-html="getCategoryDisplayText(entry.category)"></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td class="cost-col">Total: 300.00</td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+    <budget-day-table v-if="entries" :entries="entries" :categories="categories" />
     <div v-else>Nothing here yet.</div>
     <div class="buttons">
       <button class="icon-btn" @click="addBudgetEntry"><span class="material-icons"> add </span>New entry</button>
@@ -41,7 +23,9 @@ import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
 import type { BudgetCategory, BudgetDay, BudgetEntry } from "@/types/types"
 import { useBudgetStore } from "@/stores/budget-categories"
 import { useBudgetCalendarStore } from "@/stores/budget-calendar"
+import BudgetDayTable from "../Budget/BudgetDayTable.vue"
 export default {
+  components: { BudgetDayTable },
   data() {
     return {
       categories: [] as BudgetCategory[],
@@ -110,32 +94,5 @@ h2 span {
 h2:hover span {
   display: inline-block;
   margin-left: 8px;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-table td,
-table th {
-  padding: 8px;
-}
-
-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  border-block-end: 1px solid var(--color-heading);
-}
-
-.cost-col {
-  text-align: right;
-  padding-right: 32px;
-}
-
-.cost-col-header {
-  width: 200px;
-  word-wrap: break-word;
 }
 </style>

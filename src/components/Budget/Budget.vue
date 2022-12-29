@@ -8,10 +8,11 @@ import AddBudgetCategory from "@/components/Budget/AddBudgetCategory.vue"
     <div class="buttons">
       <button @click="addNewBudgetCategory">Add a category</button>
     </div>
-    <h3>Categories:</h3>
-    <ul>
-      <li v-for="category in budgetCategories">{{ category.name }}</li>
-    </ul>
+    <div v-for="day in calendar" v-bind:key="day.id">
+      <h3 v-if="day.entries && day.entries.length > 0">{{ getDateFormatted(day.date) }}</h3>
+      <hr v-if="day.entries && day.entries.length > 0" />
+      <budget-day-table v-if="day.entries && day.entries.length > 0" :entries="day.entries" :categories="budgetCategories" />
+    </div>
     <!-- Add new category modal -->
     <Modal v-if="newBudgetCategory" @close-modal="closeNewCategoryModal">
       <template v-slot:title> Add a new category </template>
@@ -23,12 +24,17 @@ import AddBudgetCategory from "@/components/Budget/AddBudgetCategory.vue"
 </template>
 <script lang="ts">
 import { useBudgetStore } from "@/stores/budget-categories"
-import type { BudgetCategory } from "@/types/types"
+import type { BudgetCategory, BudgetDay } from "@/types/types"
+import { useBudgetCalendarStore } from "@/stores/budget-calendar"
+import { DateTime } from "luxon"
+import BudgetDayTable from "./BudgetDayTable.vue"
 export default {
+  components: { BudgetDayTable },
   data() {
     return {
       budgetCategories: [] as BudgetCategory[],
       newBudgetCategory: undefined as BudgetCategory | undefined,
+      calendar: [] as BudgetDay[],
     }
   },
   methods: {
@@ -43,6 +49,9 @@ export default {
       budgetCategoryStore.saveNewCategory(newCategory)
       this.closeNewCategoryModal()
     },
+    getDateFormatted(date: Date): string {
+      return DateTime.fromJSDate(date).toFormat("yyyy.MM.dd")
+    },
   },
   mounted() {
     const budgetCategoryStore = useBudgetStore()
@@ -50,6 +59,28 @@ export default {
     budgetCategoryStore.$subscribe((_, state) => {
       this.budgetCategories = state.categories
     })
+
+    const budgetCalendarStore = useBudgetCalendarStore()
+    this.calendar = budgetCalendarStore.allDays
+    budgetCalendarStore.$subscribe((_, state) => {
+      this.calendar = state.allDays
+    })
   },
 }
 </script>
+<style scoped>
+div.entry {
+  margin-bottom: 20px;
+}
+table {
+  width: 100%;
+}
+table td,
+table th {
+  text-align: left;
+}
+table th {
+  font-weight: bolder;
+  padding-bottom: 20px;
+}
+</style>
