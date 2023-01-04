@@ -19,7 +19,7 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
         .initializeBudgetCalendar(initialCal)
         .then((res) => {
           if (res) {
-            this.setCalendar(res)
+            this.setDaysAndCalendar(res)
           } else {
             throw Error("No response from API")
           }
@@ -51,14 +51,20 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
       })
     },
 
-    setCalendar(days: BudgetDay[]) {
+    setDaysAndCalendar(days: BudgetDay[]) {
       const sortedDays = this.sortDays(days)
       this.allDays = sortedDays
       this.currentDay = this.allDays.find((day) => {
         return DateUtils.checkIfDaysAreSame(new Date(), day.date)
       })!!
-      this.calendar = sortedDays
+      this.setCalendar()
       this.loading = false
+    },
+
+    setCalendar() {
+      this.calendar = this.allDays.filter((budgetDay) => {
+        return DateUtils.isDateBetween(this.startDate, this.endDate, budgetDay.date)
+      })
     },
 
     addBudgetEntryForDate(entry: BudgetEntry, date: Date) {
@@ -71,7 +77,7 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
           .initializeBudgetCalendar(dayToAdd)
           .then((res) => {
             if (res) {
-              this.setCalendar(res)
+              this.setDaysAndCalendar(res)
               const newBudgetDay = this.getBudgetDayFor(date)
               this.addBudgetEntryForExistingDate(entry, newBudgetDay)
             } else {
@@ -111,6 +117,12 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
       return this.allDays.find((day) => {
         return DateUtils.checkIfDaysAreSame(day.date, date)
       })!!
+    },
+
+    changeDateRange(start: Date, end: Date) {
+      this.startDate = start
+      this.endDate = end
+      this.setCalendar()
     },
   },
 })

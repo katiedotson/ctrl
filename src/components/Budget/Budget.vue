@@ -3,6 +3,7 @@ import Modal from "@/components/Modal/Modal.vue"
 import AddBudgetCategory from "@/components/Budget/AddBudgetCategory.vue"
 import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
 import EditBudgetCategories from "@/components/Budget/EditBudgetCategories.vue"
+import Datepicker from "@vuepic/vue-datepicker"
 </script>
 <template>
   <section>
@@ -11,6 +12,7 @@ import EditBudgetCategories from "@/components/Budget/EditBudgetCategories.vue"
       <button @click="editBudgetCategories">Edit categories</button>
       <button @click="addNewBudgetCategory">Add a category</button>
     </div>
+    <Datepicker v-model="date" @update:modelValue="handleDateChange" range dark />
     <div v-for="day in calendar" v-bind:key="day.id">
       <h3 v-if="day.entries && day.entries.length > 0">{{ getDateFormatted(day.date) }}</h3>
       <hr v-if="day.entries && day.entries.length > 0" />
@@ -57,6 +59,7 @@ export default {
       calendar: [] as BudgetDay[],
       editBudgetCategory: false,
       budgetEntryItem: undefined as BudgetEntry | undefined,
+      date: [] as Date[],
     }
   },
   methods: {
@@ -91,6 +94,10 @@ export default {
       budgetCalendarStore.addBudgetEntryForDate(entry, date)
       this.closeBudgetEntryModal()
     },
+    handleDateChange(dates: any) {
+      const budgetCalendarStore = useBudgetCalendarStore()
+      budgetCalendarStore.changeDateRange(dates[0] as Date, dates[1] as Date)
+    },
   },
   mounted() {
     const budgetCategoryStore = useBudgetStore()
@@ -100,10 +107,13 @@ export default {
     })
 
     const budgetCalendarStore = useBudgetCalendarStore()
-    this.calendar = budgetCalendarStore.allDays
+    this.calendar = budgetCalendarStore.calendar
     budgetCalendarStore.$subscribe((_, state) => {
-      this.calendar = state.allDays
+      this.calendar = state.calendar
+      this.date = [state.startDate, state.endDate]
     })
+    this.date.push(budgetCalendarStore.startDate)
+    this.date.push(budgetCalendarStore.endDate)
   },
 }
 </script>

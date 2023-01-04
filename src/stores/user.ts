@@ -86,7 +86,7 @@ export const useUserStore = defineStore("user", {
       habitsStore.setUserHabits(user.habits)
       calendarStore.setHabitCalendar(user.habitCalendar)
       budgetStore.setCategories(user.budgetCategories)
-      budgetCalendarStore.setCalendar(user.budgetCalendar)
+      budgetCalendarStore.setDaysAndCalendar(user.budgetCalendar)
     },
 
     createUser(userId: string, userName: string | null) {
