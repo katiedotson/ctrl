@@ -27,12 +27,9 @@ export default {
   },
   methods: {
     getCategoryDisplayText(categoryId: string): string {
-      console.log(categoryId)
-      console.log(this.categories)
-      const category =
-        this.categories.find((cat) => {
-          return cat.id == categoryId
-        }) ?? this.categories[0]
+      const category = this.categories.find((cat) => {
+        return cat.id == categoryId
+      })!!
       return category.name + " " + category.icon
     },
   },
