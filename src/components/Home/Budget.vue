@@ -14,7 +14,7 @@ import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
     <Modal v-if="addBudgetEntryItem" @close-modal="closeBudgetEntryModal">
       <template v-slot:title> New budget entry </template>
       <template v-slot:content>
-        <AddBudgetEntry @save-new-entry="saveNewBudgetEntry" :budget-entry-prop="addBudgetEntryItem" :budget-categories-prop="categories" />
+        <AddBudgetEntry :show-date="false" @save-new-entry="saveNewBudgetEntry" :budget-entry-prop="addBudgetEntryItem" :budget-categories-prop="categories" />
       </template>
     </Modal>
   </div>

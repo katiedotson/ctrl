@@ -1,6 +1,10 @@
+<script setup lang="ts">
+import Datepicker from "@vuepic/vue-datepicker"
+</script>
 <template>
   <div>
     <hr />
+    <Datepicker v-if="this.$props.showDate" v-model="date" @update:modelValue="handleDateChange" dark :max-date="new Date()" />
     <label for="category">Category</label>
     <select id="category" name="category" v-model="entryItem.category" v-bind:class="categoryClass()" v-on:blur="categoryIsDirty = true">
       <option v-for="category in budgetCategories" v-bind:value="category.id" v-bind:key="category.id">{{ category.name }} {{ category.icon }}</option>
@@ -26,6 +30,10 @@ export default {
       type: Array as () => BudgetCategory[],
       required: true,
     },
+    showDate: {
+      type: Boolean,
+      required: true,
+    },
   },
   mounted() {
     this.entryItem = this.$props.budgetEntryProp
@@ -38,12 +46,13 @@ export default {
       notesIsDirty: false,
       entryItem: {} as BudgetEntry,
       budgetCategories: [] as BudgetCategory[],
+      date: new Date(),
     }
   },
   methods: {
     saveNewEntry() {
       if (this.costIsDirty && this.notesIsDirty && this.categoryIsDirty && this.validateCost() && this.validateNotes() && this.validateCategory()) {
-        this.$emit("saveNewEntry", this.entryItem)
+        this.$emit("saveNewEntry", this.entryItem, this.date)
       } else {
         // TODO show validation
       }

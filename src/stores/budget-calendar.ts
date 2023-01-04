@@ -44,17 +44,48 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
       return calendar
     },
 
+    sortDays(days: BudgetDay[]): BudgetDay[] {
+      return days.sort((dayA, dayB) => {
+        // @ts-ignore
+        return Number(dayA.date - dayB.date)
+      })
+    },
+
     setCalendar(days: BudgetDay[]) {
-      this.allDays = days
+      const sortedDays = this.sortDays(days)
+      this.allDays = sortedDays
       this.currentDay = this.allDays.find((day) => {
         return DateUtils.checkIfDaysAreSame(new Date(), day.date)
       })!!
-      this.calendar = days
+      this.calendar = sortedDays
       this.loading = false
     },
 
     addBudgetEntryForDate(entry: BudgetEntry, date: Date) {
       const budgetDay = this.getBudgetDayFor(date)
+      if (budgetDay) {
+        this.addBudgetEntryForExistingDate(entry, budgetDay)
+      } else {
+        const dayToAdd = this.createBudgetDaysForDateRange(date, DateUtils.plusDays(date, 1))
+        repository
+          .initializeBudgetCalendar(dayToAdd)
+          .then((res) => {
+            if (res) {
+              this.setCalendar(res)
+              const newBudgetDay = this.getBudgetDayFor(date)
+              this.addBudgetEntryForExistingDate(entry, newBudgetDay)
+            } else {
+              throw Error("No response from API")
+            }
+          })
+          .catch((err) => {
+            console.error(err)
+            this.loading = false
+          })
+      }
+    },
+
+    addBudgetEntryForExistingDate(entry: BudgetEntry, budgetDay: BudgetDay) {
       repository
         .updateBudgetCalendarDayEntries(budgetDay, entry)
         .then((res) => {

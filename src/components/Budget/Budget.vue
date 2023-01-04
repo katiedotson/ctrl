@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Modal from "@/components/Modal/Modal.vue"
 import AddBudgetCategory from "@/components/Budget/AddBudgetCategory.vue"
+import AddBudgetEntry from "@/components/Budget/AddBudgetEntry.vue"
 import EditBudgetCategories from "@/components/Budget/EditBudgetCategories.vue"
 </script>
 <template>
@@ -15,6 +16,16 @@ import EditBudgetCategories from "@/components/Budget/EditBudgetCategories.vue"
       <hr v-if="day.entries && day.entries.length > 0" />
       <budget-day-table v-if="day.entries && day.entries.length > 0" :entries="day.entries" :categories="budgetCategories" />
     </div>
+    <div class="buttons">
+      <button class="icon-btn" @click="addBudgetEntry"><span class="material-icons"> add </span>New entry</button>
+    </div>
+    <!-- Add Budget Entry Item Modal -->
+    <Modal v-if="budgetEntryItem" @close-modal="closeBudgetEntryModal">
+      <template v-slot:title> New budget entry </template>
+      <template v-slot:content>
+        <AddBudgetEntry :show-date="true" @save-new-entry="saveNewBudgetEntry" :budget-entry-prop="budgetEntryItem" :budget-categories-prop="budgetCategories" />
+      </template>
+    </Modal>
     <!-- Add new category modal -->
     <Modal v-if="newBudgetCategory" @close-modal="closeNewCategoryModal">
       <template v-slot:title> Add a new category </template>
@@ -33,7 +44,7 @@ import EditBudgetCategories from "@/components/Budget/EditBudgetCategories.vue"
 </template>
 <script lang="ts">
 import { useBudgetStore } from "@/stores/budget-categories"
-import type { BudgetCategory, BudgetDay } from "@/types/types"
+import type { BudgetCategory, BudgetDay, BudgetEntry } from "@/types/types"
 import { useBudgetCalendarStore } from "@/stores/budget-calendar"
 import { DateTime } from "luxon"
 import BudgetDayTable from "./BudgetDayTable.vue"
@@ -45,6 +56,7 @@ export default {
       newBudgetCategory: undefined as BudgetCategory | undefined,
       calendar: [] as BudgetDay[],
       editBudgetCategory: false,
+      budgetEntryItem: undefined as BudgetEntry | undefined,
     }
   },
   methods: {
@@ -67,6 +79,17 @@ export default {
     },
     closeEditCategoryModal() {
       this.editBudgetCategory = false
+    },
+    addBudgetEntry() {
+      this.budgetEntryItem = { id: "", category: "", cost: 0, notes: "" }
+    },
+    closeBudgetEntryModal() {
+      this.budgetEntryItem = undefined
+    },
+    saveNewBudgetEntry(entry: BudgetEntry, date: Date) {
+      const budgetCalendarStore = useBudgetCalendarStore()
+      budgetCalendarStore.addBudgetEntryForDate(entry, date)
+      this.closeBudgetEntryModal()
     },
   },
   mounted() {
