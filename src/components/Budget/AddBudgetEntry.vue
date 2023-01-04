@@ -3,7 +3,7 @@
     <hr />
     <label for="category">Category</label>
     <select id="category" name="category" v-model="entryItem.category" v-bind:class="categoryClass()" v-on:blur="categoryIsDirty = true">
-      <option v-for="category in budgetCategories" v-bind:value="category.id">{{ category.name }} {{ category.icon }}</option>
+      <option v-for="category in budgetCategories" v-bind:value="category.id" v-bind:key="category.id">{{ category.name }} {{ category.icon }}</option>
     </select>
     <label for="cost">Cost</label>
     <input type="text" id="cost" name="cost" v-model="entryItem.cost" v-bind:class="costClass()" v-on:blur="costIsDirty = true" />

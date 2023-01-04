@@ -16,6 +16,14 @@ export default {
     }
   },
 
+  toDbHabits(habits: Habit[]): any {
+    const mappedHabits: any = {}
+    habits.forEach((habit) => {
+      mappedHabits[habit.id] = habit
+    })
+    return mappedHabits
+  },
+
   userFromDatabaseResponse(userResponse: any): UserData {
     const userData = {
       name: userResponse.name,

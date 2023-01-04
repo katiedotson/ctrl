@@ -60,18 +60,21 @@ export const useBudgetStore = defineStore("budget-categories", {
 
     updateCategory(category: BudgetCategory) {
       this.loading = true
-      this.categories.map((cat) => {
-        if (cat.id == category.id) {
-          return category
-        }
-        return cat
-      })
+
       repository
-        .updateBudgetCategories(this.categories)
-        .then((res) => {
+        .updateBudgetCategory(category)
+        .then((res: any) => {
+          if (res) {
+            this.categories.map((cat) => {
+              if (cat.id == category.id) {
+                return category
+              }
+              return cat
+            })
+          }
           this.loading = false
         })
-        .catch((err) => {
+        .catch((err: any) => {
           this.loading = false
           console.error(err)
         })

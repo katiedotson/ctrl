@@ -4,6 +4,7 @@ import { get, getDatabase, push, ref, set, update } from "firebase/database"
 import config from "@/repository/config"
 import { localRepo } from "@/repository/local"
 import mappers from "@/repository/dbMappers"
+import dbMappers from "@/repository/dbMappers"
 
 const firebaseConfig = config
 
@@ -136,12 +137,22 @@ export default {
     return undefined
   },
 
+  updateBudgetCategory: async (category: BudgetCategory): Promise<BudgetCategory | undefined> => {
+    const userId = localRepo.loadUserId()
+    if (userId) {
+      const docRef = ref(db, `${paths.users}/${userId}/${paths.budgetCategories}/${category.id}`)
+      await set(docRef, category)
+    }
+    return undefined
+  },
+
   updateUserHabits: async (habits: Habit[]): Promise<Habit[] | undefined> => {
     const userId = localRepo.loadUserId()
+
     if (userId) {
       const docRef = ref(db, `${paths.users}/${userId}`)
       await update(docRef, {
-        habits: habits,
+        habits: dbMappers.toDbHabits(habits),
       })
     }
     return undefined
