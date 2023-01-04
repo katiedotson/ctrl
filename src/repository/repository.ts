@@ -4,7 +4,6 @@ import { get, getDatabase, push, ref, set, update } from "firebase/database"
 import config from "@/repository/config"
 import { localRepo } from "@/repository/local"
 import mappers from "@/repository/dbMappers"
-import dbMappers from "@/repository/dbMappers"
 
 const firebaseConfig = config
 
@@ -148,11 +147,10 @@ export default {
 
   updateUserHabits: async (habits: Habit[]): Promise<Habit[] | undefined> => {
     const userId = localRepo.loadUserId()
-
     if (userId) {
       const docRef = ref(db, `${paths.users}/${userId}`)
       await update(docRef, {
-        habits: dbMappers.toDbHabits(habits),
+        habits: mappers.toDbHabits(habits),
       })
     }
     return undefined
