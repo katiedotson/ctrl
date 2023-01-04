@@ -10,6 +10,11 @@
       <div class="Rtable-cell">{{ entry.notes }}</div>
       <div class="Rtable-cell" style="text-align: right">{{ entry.cost }}</div>
     </div>
+    <div class="Rtable Rtable--3cols Rtable--collapse">
+      <div class="Rtable-cell"></div>
+      <div class="Rtable-cell"></div>
+      <div class="Rtable-cell" style="text-align: right" v-html="getTotal"></div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -31,6 +36,22 @@ export default {
         return cat.id == categoryId
       })!!
       return category.name + " " + category.icon
+    },
+  },
+  computed: {
+    getTotal(): string {
+      return (
+        "Total: " +
+        this.$props.entries
+          .map((entry) => {
+            return entry.cost
+          })
+          .reduce((accumulator, current) => {
+            return Number(accumulator) + Number(current)
+          }, 0)
+          .toFixed(2)
+          .toString()
+      )
     },
   },
 }
