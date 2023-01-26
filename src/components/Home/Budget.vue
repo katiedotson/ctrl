@@ -42,7 +42,7 @@ export default {
     })
 
     const budgetCalendarStore = useBudgetCalendarStore()
-    this.entries = budgetCalendarStore.currentDay.entries
+    this.entries = budgetCalendarStore.currentDay?.entries ?? []
     budgetCalendarStore.$subscribe((_, state) => {
       this.entries = state.currentDay.entries
     })

@@ -34,7 +34,7 @@ export const useHabitCalendarStore = defineStore("calendar", {
       return calendar
     },
 
-    createHabitDaysForMissingDays(missingDays: Date[]): HabitDay[] {
+    createHabitDaysForDates(missingDays: Date[]): HabitDay[] {
       const calendar: HabitDay[] = []
       missingDays.forEach((day) => {
         calendar.push({
@@ -48,9 +48,18 @@ export const useHabitCalendarStore = defineStore("calendar", {
 
     setHabitCalendar(dates: HabitDay[]) {
       this.allDays = dates
-      this.sortHabitDays()
-      this.loadCurrentHabitDay()
-      this.loadHabitCalendar()
+      if (this.getCurrentHabitDay() != undefined) {
+        this.sortHabitDays()
+        this.currentDay = this.getCurrentHabitDay()!!
+        this.loadHabitCalendar()
+      } else {
+        this.sortHabitDays()
+        const lastDay = this.allDays[this.allDays.length - 1]
+        const nextDay = DateUtils.plusDays(lastDay.date, 1)
+        this.loadDateRange(nextDay, DateUtils.endOfWeek(nextDay))
+        this.currentDay = this.getCurrentHabitDay()!!
+        this.loadHabitCalendar()
+      }
     },
 
     sortHabitDays() {
@@ -60,11 +69,11 @@ export const useHabitCalendarStore = defineStore("calendar", {
       })
     },
 
-    loadCurrentHabitDay() {
+    getCurrentHabitDay(): HabitDay | undefined {
       const today = this.allDays.find((day) => {
         return DateUtils.checkIfDaysAreSame(new Date(), day.date)
-      })!!
-      this.currentDay = today
+      })
+      return today
     },
 
     loadHabitCalendar() {
@@ -115,7 +124,10 @@ export const useHabitCalendarStore = defineStore("calendar", {
         })
     },
 
-    changeDateRange(startDate: Date, endDate: Date) {
+    loadDateRange(startDate: Date, endDate: Date) {
+      console.log("startDate", startDate)
+      console.log("endDate", endDate)
+
       this.loading = true
 
       this.startDate = DateUtils.startOfDay(startDate)
@@ -133,7 +145,7 @@ export const useHabitCalendarStore = defineStore("calendar", {
       })
 
       if (missingDays.length > 0) {
-        const missingDaysCreated = this.createHabitDaysForMissingDays(missingDays)
+        const missingDaysCreated = this.createHabitDaysForDates(missingDays)
 
         repository
           .loadAdditionalDays(missingDaysCreated)

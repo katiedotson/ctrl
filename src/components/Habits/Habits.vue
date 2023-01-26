@@ -86,7 +86,7 @@ export default {
   methods: {
     handleDateChange(dates: any) {
       const calendarStore = useHabitCalendarStore()
-      calendarStore.changeDateRange(dates[0] as Date, dates[1] as Date)
+      calendarStore.loadDateRange(dates[0] as Date, dates[1] as Date)
     },
     closeDateModal() {
       this.dateModalDay = undefined

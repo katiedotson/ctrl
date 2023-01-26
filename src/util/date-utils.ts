@@ -16,6 +16,10 @@ export const DateUtils = {
     return DateTime.fromJSDate(date).startOf("week").toJSDate()
   },
 
+  endOfWeek(date: Date): Date {
+    return DateTime.fromJSDate(date).endOf("week").startOf("day").toJSDate()
+  },
+
   plusDays(date: Date, numberOfDays: number): Date {
     return DateTime.fromJSDate(date).plus({ days: numberOfDays }).toJSDate()
   },
