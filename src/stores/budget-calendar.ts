@@ -91,12 +91,17 @@ export const useBudgetCalendarStore = defineStore("budget-calendar", {
       }
     },
 
+    editBudgetEntryForDate(entry: BudgetEntry, date: Date) {
+      console.log(entry)
+      console.log(date)
+    },
+
     addBudgetEntryForExistingDate(entry: BudgetEntry, budgetDay: BudgetDay) {
       repository
         .updateBudgetCalendarDayEntries(budgetDay, entry)
         .then((res) => {
           if (res) {
-            this.allDays.map((day) => {
+            this.allDays = this.allDays.map((day) => {
               if (DateUtils.checkIfDaysAreSame(res.date, day.date)) {
                 if (!res.entries) {
                   res.entries = []

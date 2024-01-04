@@ -16,7 +16,7 @@ import Datepicker from "@vuepic/vue-datepicker"
     <div v-for="day in calendar" v-bind:key="day.id">
       <h3 v-if="day.entries && day.entries.length > 0">{{ getDateFormatted(day.date) }}</h3>
       <hr v-if="day.entries && day.entries.length > 0" />
-      <budget-day-table v-if="day.entries && day.entries.length > 0" :entries="day.entries" :categories="budgetCategories" />
+      <budget-day-table v-if="day.entries && day.entries.length > 0" :entries="day.entries" :categories="budgetCategories" @entryClicked="budgetEntryClicked" :date="day.date" />
     </div>
     <div class="buttons">
       <button class="icon-btn" @click="addBudgetEntry"><span class="material-icons"> add </span>New entry</button>
@@ -26,6 +26,13 @@ import Datepicker from "@vuepic/vue-datepicker"
       <template v-slot:title> New budget entry </template>
       <template v-slot:content>
         <AddBudgetEntry :show-date="true" @save-new-entry="saveNewBudgetEntry" :budget-entry-prop="budgetEntryItem" :budget-categories-prop="budgetCategories" />
+      </template>
+    </Modal>
+    <!-- Edit Budget Item Modal -->
+    <Modal v-if="editBudgetEntry" @close-modal="closeEditBudgetModal">
+      <template v-slot:title> Edit budget entry </template>
+      <template v-slot:content>
+        <AddBudgetEntry :show-date="true" @save-edit-entry="saveEditBudgetEntry" :budget-entry-prop="editBudgetEntry" :budget-categories-prop="budgetCategories" :date-prop="editBudgetDate" />
       </template>
     </Modal>
     <!-- Add new category modal -->
@@ -60,6 +67,8 @@ export default {
       editBudgetCategory: false,
       budgetEntryItem: undefined as BudgetEntry | undefined,
       date: [] as Date[],
+      editBudgetEntry: undefined as BudgetEntry | undefined,
+      editBudgetDate: undefined as Date | undefined,
     }
   },
   methods: {
@@ -98,6 +107,19 @@ export default {
       const budgetCalendarStore = useBudgetCalendarStore()
       budgetCalendarStore.changeDateRange(dates[0] as Date, dates[1] as Date)
     },
+    saveEditBudgetEntry(entry: BudgetEntry, date: Date) {
+      const budgetCalendarStore = useBudgetCalendarStore()
+      budgetCalendarStore.editBudgetEntryForDate(entry, date)
+      this.closeEditBudgetModal()
+    },
+    budgetEntryClicked(entry: BudgetEntry, date: Date) {
+      this.editBudgetEntry = entry
+      this.editBudgetDate = date
+    },
+    closeEditBudgetModal() {
+      this.editBudgetEntry = undefined
+      this.editBudgetDate = undefined
+    },
   },
   mounted() {
     const budgetCategoryStore = useBudgetStore()
@@ -118,6 +140,9 @@ export default {
 }
 </script>
 <style scoped>
+.dp__main {
+  margin: 2em 0;
+}
 div.entry {
   margin-bottom: 20px;
 }

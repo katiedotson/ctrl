@@ -5,7 +5,7 @@
       <div class="Rtable-cell">Notes</div>
       <div class="Rtable-cell" style="text-align: right">Cost</div>
     </div>
-    <div class="Rtable Rtable--3cols Rtable--collapse" v-for="entry in entries" v-bind:key="entry.id">
+    <div class="Rtable Rtable--3cols Rtable--collapse" v-for="entry in entries" v-bind:key="entry.id" @click="onClicked(entry, date)">
       <div class="Rtable-cell" v-html="getCategoryDisplayText(entry.category)"></div>
       <div class="Rtable-cell">{{ entry.notes }}</div>
       <div class="Rtable-cell" style="text-align: right">{{ entry.cost }}</div>
@@ -29,6 +29,10 @@ export default {
       type: Array as () => BudgetCategory[],
       required: true,
     },
+    date: {
+      type: Date,
+      required: true,
+    },
   },
   methods: {
     getCategoryDisplayText(categoryId: string): string {
@@ -36,6 +40,9 @@ export default {
         return cat.id == categoryId
       })!!
       return category.name + " " + category.icon
+    },
+    onClicked(entry: BudgetEntry, date: Date) {
+      this.$emit("entryClicked", entry, date)
     },
   },
   computed: {

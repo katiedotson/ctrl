@@ -14,7 +14,7 @@ import Datepicker from "@vuepic/vue-datepicker"
     <label for="notes">Notes</label>
     <input type="text" id="notes" name="notes" v-model="entryItem.notes" v-bind:class="notesClass()" v-on:blur="notesIsDirty = true" />
     <div class="buttons">
-      <button @click="saveNewEntry">Save</button>
+      <button @click="saveEntry">Save</button>
     </div>
   </div>
 </template>
@@ -34,10 +34,15 @@ export default {
       type: Boolean,
       required: true,
     },
+    dateProp: {
+      type: Date,
+      required: false,
+    },
   },
   mounted() {
     this.entryItem = this.$props.budgetEntryProp
     this.budgetCategories = this.$props.budgetCategoriesProp
+    this.date = this.$props.dateProp ?? new Date()
   },
   data() {
     return {
@@ -46,11 +51,17 @@ export default {
       notesIsDirty: false,
       entryItem: {} as BudgetEntry,
       budgetCategories: [] as BudgetCategory[],
-      date: new Date(),
+      date: {} as Date,
     }
   },
   methods: {
-    saveNewEntry() {
+    saveEntry() {
+      // if date was provided, this was editing, not adding
+      if (this.dateProp) {
+        this.$emit("saveEditEntry", this.entryItem, this.date)
+        return
+      }
+
       if (this.costIsDirty && this.notesIsDirty && this.categoryIsDirty && this.validateCost() && this.validateNotes() && this.validateCategory()) {
         this.$emit("saveNewEntry", this.entryItem, this.date)
       } else {
